@@ -33,7 +33,7 @@ const isPageBottom = computed(() => {
 				to="/"
 				class="title"
 			>
-				Hiroki Osame
+				Kyle Holzinger
 			</router-link>
 			<div class="nav-links">
 				<router-link
@@ -52,7 +52,7 @@ const isPageBottom = computed(() => {
 
 				<button
 					:title="`Change to ${isDark ? 'light' : 'dark'} mode`"
-					@click="toggleDarkMode"
+					@click="toggleDarkMode()"
 				>
 					<icon-ri-sun-line v-if="isDark" />
 					<icon-ri-moon-line v-else />

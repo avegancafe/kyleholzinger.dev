@@ -3,12 +3,12 @@ import path from 'path';
 import { Feed, type Item } from 'feed';
 import grayMatter from 'gray-matter';
 
-const link = 'https://hirok.io';
+const link = 'https://kyleholzinger.dev';
 const feed = new Feed({
 	id: link,
-	title: 'Hiroki Osame',
+	title: 'UNTITLED',
 	author: {
-		name: 'Hiroki Osame',
+		name: 'Kyle Holzinger',
 		link,
 	},
 	link,

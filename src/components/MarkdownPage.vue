@@ -1,19 +1,21 @@
-<script setup lang='ts'>
+<script setup lang="ts">
 import { formatDate } from '../utils/format-date';
 
 const props = defineProps<{
-	frontmatter: {
-		title?: string;
-		subtitle?: string;
-		heading?: boolean;
-		date?: string;
-		duration?: string;
-	};
+  frontmatter: {
+    title?: string;
+    subtitle?: string;
+    heading?: boolean;
+    date?: string;
+    duration?: string;
+  };
 }>();
 
 const route = useRoute();
 const isBlogPost = computed(() => props.frontmatter.date);
-const heading = computed(() => props.frontmatter.heading ?? props.frontmatter.title);
+const heading = computed(
+	() => props.frontmatter.heading ?? props.frontmatter.title,
+);
 const article = $ref<HTMLElement>(); // eslint-disable-line no-undef
 
 const { scrollMarginTop } = useCssModule();
@@ -38,19 +40,23 @@ onMounted(() => {
 });
 
 useHead({
-	meta: [{
-		property: 'og:type',
-		content: 'article',
-	}],
+	meta: [
+		{
+			property: 'og:type',
+			content: 'article',
+		},
+	],
 });
 
 if (props.frontmatter.title) {
 	useHead({
-		title: `${props.frontmatter.title} | Hiroki Osame`,
-		meta: [{
-			property: 'og:title',
-			content: props.frontmatter.title,
-		}],
+		title: `${props.frontmatter.title} | UNTITLED`,
+		meta: [
+			{
+				property: 'og:title',
+				content: props.frontmatter.title,
+			},
+		],
 	});
 }
 
@@ -115,24 +121,28 @@ if (props.frontmatter.subtitle) {
 				>
 			</router-link>
 			<div>
-				<div class="text-xl font-medium">
-					Thanks for reading! Hope you'll stick around.
+				<div class="font-medium">
+					These are all my personal opinions, they are probably inaccurate. I
+					apologize in advance, or your welcome, depending on how you enjoyed
+					the post.
 				</div>
 				<div class="m-t-2">
-					— Hiroki Osame
+					— Kyle Holzinger
 				</div>
 				<div class="m-t-1 opacity-70">
-					Open source Engineer. Living in NYC. Working at Square.
+					Software engineer & wannabe rennaisance man.<br>Living in NYC. Working at Relay Payments.
 				</div>
-
-				<Button
-					href="https://twitter.com/privatenumbr"
-					size="small"
-					class="m-t-8"
-				>
-					<icon-mdi-twitter class="m-r-1" /> Follow @privatenumbr
-				</Button>
 			</div>
+		</div>
+
+		<div class="flex justify-center">
+			<Button
+				href="https://twitter.com/kyleholzinger"
+				size="small"
+				class="m-t-8"
+			>
+				<icon-mdi-twitter class="m-r-1" /> Follow @kyleholzinger
+			</Button>
 		</div>
 
 		<div class="m-t-15 flex justify-between text-xs">
@@ -141,11 +151,13 @@ if (props.frontmatter.subtitle) {
 					Have a question for me?
 				</div>
 				Reach out on
-				<ExternalLink href="https://twitter.com/privatenumbr">
+				<ExternalLink href="https://twitter.com/kyleholzinger">
 					Twitter
 				</ExternalLink>
 				or
-				<ExternalLink href="https://github.com/privatenumber/hirok.io/discussions">
+				<ExternalLink
+					href="https://github.com/avegancafe/kyleholzinger.dev/discussions"
+				>
 					GitHub
 				</ExternalLink>
 			</div>
@@ -155,7 +167,7 @@ if (props.frontmatter.subtitle) {
 					Want to propose an edit?
 				</div>
 				<ExternalLink
-					:href="`https://github.com/privatenumber/hirok.io/blob/master${route.meta.filePath}`"
+					:href="`https://github.com/avegancafe/kyleholzinger.dev/blob/master${route.meta.filePath}`"
 				>
 					Open a pull request
 				</ExternalLink>
@@ -166,6 +178,6 @@ if (props.frontmatter.subtitle) {
 
 <style module>
 .scroll-margin-top {
-	scroll-margin-top: 60px;
+  scroll-margin-top: 60px;
 }
 </style>

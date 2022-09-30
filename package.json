@@ -15,7 +15,7 @@
 		"pre-commit": "pnpm lint-staged"
 	},
 	"lint-staged": {
-		"*.{js,ts,vue,md}": "eslint"
+		"*.{js,ts,vue,md}": "eslint --fix"
 	},
 	"devDependencies": {
 		"@iconify/json": "^2.1.87",

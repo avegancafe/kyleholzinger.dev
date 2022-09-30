@@ -12,17 +12,17 @@ onMounted(() => {
 	useEventListener(window, 'resize', setViewportHeight);
 });
 
-const websiteDescription = 'Hiroki Osame\'s personal website & blog';
+const websiteDescription = 'Kyle Holzinger\'s personal website & blog';
 useHead({
-	title: 'Hiroki Osame',
+	title: 'UNTITLED',
 	meta: [
 		{
 			property: 'og:site_name',
-			content: 'Hiroki Osame',
+			content: 'UNTITLED',
 		},
 		{
 			property: 'og:title',
-			content: 'Hiroki Osame',
+			content: 'UNTITLED',
 		},
 		{
 			property: 'description',
