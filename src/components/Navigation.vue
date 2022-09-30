@@ -38,13 +38,6 @@ const isPageBottom = computed(() => {
 			<div class="nav-links">
 				<router-link
 					class="nav-link"
-					to="/projects"
-				>
-					Projects
-				</router-link>
-
-				<router-link
-					class="nav-link"
 					to="/posts"
 				>
 					Posts
