@@ -1,5 +1,6 @@
 :root {
   --green: #38a824;
+  --animation-time: 2s;
 }
 
 ::-moz-selection {
@@ -73,67 +74,67 @@ pre {
 
 @keyframes flicker {
   0% {
-    opacity: 0.67861;
+    opacity: 0.67;
   }
   5% {
-    opacity: 0.67861;
+    opacity: 0.67;
   }
   10% {
-    opacity: 0.67861;
+    opacity: 0.67;
   }
   15% {
-    opacity: 0.90626;
+    opacity: 0.90;
   }
   20% {
-    opacity: 0.18128;
+    opacity: 0.18;
   }
   25% {
-    opacity: 0.83891;
+    opacity: 0.83;
   }
   30% {
-    opacity: 0.65583;
+    opacity: 0.65;
   }
   35% {
-    opacity: 0.67807;
+    opacity: 0.67;
   }
   40% {
-    opacity: 0.66559;
+    opacity: 0.66;
   }
   45% {
-    opacity: 0.96019;
+    opacity: 0.96;
   }
   50% {
-    opacity: 0.96019;
+    opacity: 0.96;
   }
   55% {
-    opacity: 0.08594;
+    opacity: 0.08;
   }
   60% {
-    opacity: 0.60313;
+    opacity: 0.60;
   }
   65% {
-    opacity: 0.71988;
+    opacity: 0.71;
   }
   70% {
-    opacity: 0.53455;
+    opacity: 0.53;
   }
   75% {
-    opacity: 0.37288;
+    opacity: 0.37;
   }
   80% {
-    opacity: 0.71428;
+    opacity: 0.71;
   }
   85% {
-    opacity: 0.70419;
+    opacity: 0.70;
   }
   90% {
-    opacity: 0.7003;
+    opacity: 0.70;
   }
   95% {
-    opacity: 0.36108;
+    opacity: 0.36;
   }
   100% {
-    opacity: 0.64387;
+    opacity: 0.64;
   }
 }
 
@@ -145,10 +146,10 @@ pre {
     text-shadow: 0.4389924193300864px 0 1px rgba(0,30,255,0.5), -0.4389924193300864px 0 1px rgba(255,0,80,0.3), 0 0 3px;
   }
   10% {
-    text-shadow: 0.02956275843481219px 0 1px rgba(0,30,255,0.5), -0.02956275843481219px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+    text-shadow: 0.4389924193300864px 0 1px rgba(0,30,255,0.5), -0.4389924193300864px 0 1px rgba(255,0,80,0.3), 0 0 3px;
   }
   15% {
-    text-shadow: 0.02956275843481219px 0 1px rgba(0,30,255,0.5), -0.02956275843481219px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+    text-shadow: 0.4389924193300864px 0 1px rgba(0,30,255,0.5), -0.4389924193300864px 0 1px rgba(255,0,80,0.3), 0 0 3px;
   }
   20% {
     text-shadow: 2.4794037899852017px 0 1px rgba(0,30,255,0.5), -2.4794037899852017px 0 1px rgba(255,0,80,0.3), 0 0 3px;
@@ -157,16 +158,16 @@ pre {
     text-shadow: 2.4794037899852017px 0 1px rgba(0,30,255,0.5), -2.4794037899852017px 0 1px rgba(255,0,80,0.3), 0 0 3px;
   }
   30% {
-    text-shadow: 0.7015590085143956px 0 1px rgba(0,30,255,0.5), -0.7015590085143956px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+    text-shadow: 1.4794037899852017px 0 1px rgba(0,30,255,0.5), -2.4794037899852017px 0 1px rgba(255,0,80,0.3), 0 0 3px;
   }
   35% {
-    text-shadow: 0.7015590085143956px 0 1px rgba(0,30,255,0.5), -0.7015590085143956px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+    text-shadow: 2.4794037899852017px 0 1px rgba(0,30,255,0.5), -2.4794037899852017px 0 1px rgba(255,0,80,0.3), 0 0 3px;
   }
   40% {
     text-shadow: 2.870905614848819px 0 1px rgba(0,30,255,0.5), -2.870905614848819px 0 1px rgba(255,0,80,0.3), 0 0 3px;
   }
   45% {
-    text-shadow: 2.870905614848819px 0 1px rgba(0,30,255,0.5), -2.870905614848819px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+    text-shadow: 2.370905614848819px 0 1px rgba(0,30,255,0.5), -2.870905614848819px 0 1px rgba(255,0,80,0.3), 0 0 3px;
   }
   50% {
     text-shadow: 0.08084290417898504px 0 1px rgba(0,30,255,0.5), -0.08084290417898504px 0 1px rgba(255,0,80,0.3), 0 0 3px;
@@ -175,10 +176,10 @@ pre {
     text-shadow: 0.08084290417898504px 0 1px rgba(0,30,255,0.5), -0.08084290417898504px 0 1px rgba(255,0,80,0.3), 0 0 3px;
   }
   60% {
-    text-shadow: 1.202193051050636px 0 1px rgba(0,30,255,0.5), -2.202193051050636px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+    text-shadow: 0.08084290417898504px 0 1px rgba(0,30,255,0.5), -0.08084290417898504px 0 1px rgba(255,0,80,0.3), 0 0 3px;
   }
   65% {
-    text-shadow: 1.202193051050636px 0 1px rgba(0,30,255,0.5), -2.202193051050636px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+    text-shadow: 0.08084290417898504px 0 1px rgba(0,30,255,0.5), -0.08084290417898504px 0 1px rgba(255,0,80,0.3), 0 0 3px;
   }
   70% {
     text-shadow: 0.48874025155497314px 0 1px rgba(0,30,255,0.5), -0.48874025155497314px 0 1px rgba(255,0,80,0.3), 0 0 3px;
@@ -230,5 +231,5 @@ pre {
   pointer-events: none;
 }
 .crt {
-  animation: textShadow 2s infinite;
+  animation: textShadow var(--animation-time) infinite;
 }

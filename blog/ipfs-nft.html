@@ -1,4 +1,4 @@
-<!DOCTYPE html lang="en-us">
+<html !DOCTYPE lang="en-us">
   <head>
     <title>Deploying an IPFS-Backed NFT</title>
     <meta name="HandheldFriendly" content="true" />
@@ -420,5 +420,19 @@ npx hardhat verify --network rinkeby "&lt;your contract address&gt;" "ipfs://&lt
       this. Congrats on deploying your contract, now you have to do the hard
       part and convince people to like your art.
     </p>
+    <script>
+      var red = document.querySelector('.crt')
+
+      function setProperty(duration) {
+        red.style.setProperty('--animation-time', duration + 's')
+      }
+
+      function changeAnimationTime() {
+        var animationDuration = (Math.random() + 1.5)
+        setProperty(animationDuration)
+      }
+
+      setInterval(changeAnimationTime, 1000)
+    </script>
   </body>
 </html>
