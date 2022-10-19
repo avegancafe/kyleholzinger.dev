@@ -2,6 +2,14 @@
   --green: #38a824;
 }
 
+::-moz-selection {
+  background: #173e0f;
+}
+
+::selection {
+  background: #173e0f;
+}
+
 * {
   font-family: Courier;
 }
