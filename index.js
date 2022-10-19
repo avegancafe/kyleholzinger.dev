@@ -7,7 +7,7 @@ function setAnimationTime(duration) {
 
 function changeAnimationTime() {
   var animationDuration =
-    (Math.random() + 1.5) / Math.max(((new Date() - counter) / 10000) * 2, 1)
+    (Math.random() + 1.5) / Math.max(((new Date() - counter) / 100000) * 2, 1)
   setAnimationTime(animationDuration)
 }
 
