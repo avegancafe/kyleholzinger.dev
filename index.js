@@ -1,26 +1,37 @@
-var red = document.querySelector('.crt')
+var el = document.querySelector('.crt')
 var counter = new Date()
 
-function setProperty(duration) {
-  red.style.setProperty('--animation-time', duration + 's')
+function setAnimationTime(duration) {
+  el.style.setProperty('--animation-time', duration + 's')
 }
 
 function changeAnimationTime() {
   var animationDuration =
     (Math.random() + 1.5) / Math.max(((new Date() - counter) / 10000) * 2, 1)
-  setProperty(animationDuration)
+  setAnimationTime(animationDuration)
 }
 
-var animationInterval = setInterval(changeAnimationTime, 1000)
+var animationInterval
+
+function startAnimationInterval() {
+  animationInterval = setInterval(changeAnimationTime, 1000)
+}
+
+startAnimationInterval()
 
 function toggleAnimation() {
-  if (animationInterval) {
-    setProperty(1_000_000_000)
+  if (el.style.webkitAnimationPlayState != 'paused') {
+    el.style.webkitAnimationPlayState = 'paused'
+    el.style.mozAnimationPlayState = 'paused'
+    el.style.animationPlayState = 'paused'
+
     clearInterval(animationInterval)
-    animationInterval = 0
   } else {
     counter = new Date()
-    setProperty(1.73)
-    animationInterval = setInterval(changeAnimationTime, 1000)
+    el.style.webkitAnimationPlayState = 'running'
+    el.style.mozAnimationPlayState = 'running'
+    el.style.animationPlayState = 'running'
+
+		startAnimationInterval()
   }
 }
