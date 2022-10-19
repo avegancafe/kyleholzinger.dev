@@ -1,0 +1,64 @@
+:root {
+  --green: #38a824;
+}
+
+* {
+  font-family: Courier;
+}
+
+@media (max-width: 700px) {
+  body {
+    margin: 8px 8px;
+  }
+
+  h1 {
+    line-height: 2.1rem;
+  }
+
+  nav li {
+    font-size: 1.3em;
+  }
+
+  nav {
+    overflow: auto;
+    max-width: 100%;
+  }
+}
+
+body {
+  background: black;
+  color: var(--green);
+  max-width: 80ch;
+  margin: 8px 24px;
+  line-height: 1.5em;
+}
+
+nav ul {
+  display: flex;
+  flex-direction: row;
+  list-style-type: none;
+  gap: 16px;
+  padding-inline-start: 0;
+}
+
+a {
+  color: var(--green);
+}
+
+hr {
+  border-color: #0e2a09;
+}
+
+code {
+  background: #071504;
+  border-radius: 4px;
+  padding: 0 4px;
+}
+
+pre {
+  background: #071504;
+  border-radius: 4px;
+  padding: 8px 8px 0;
+  max-width: 80ch;
+  overflow: auto;
+}
