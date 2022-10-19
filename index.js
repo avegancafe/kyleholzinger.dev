@@ -11,4 +11,16 @@ function changeAnimationTime() {
   setProperty(animationDuration)
 }
 
-setInterval(changeAnimationTime, 1000)
+var animationInterval = setInterval(changeAnimationTime, 1000)
+
+function toggleAnimation() {
+  if (animationInterval) {
+    setProperty(1_000_000_000)
+    clearInterval(animationInterval)
+    animationInterval = 0
+  } else {
+    counter = new Date()
+    setProperty(1.73)
+    animationInterval = setInterval(changeAnimationTime, 1000)
+  }
+}
