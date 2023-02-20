@@ -60,7 +60,7 @@ hr {
   border-color: #0e2a09;
 }
 
-code {
+code:not([class^="language-"]) {
   background: #071504;
   border-radius: 4px;
   padding: 0 4px;
@@ -266,4 +266,8 @@ pre {
 .stabilizer {
   position: absolute;
   bottom: 16px;
+}
+
+code[class*=language-], pre[class*=language-] {
+  line-height: 1em;
 }
