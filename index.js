@@ -19,7 +19,9 @@ function startAnimationInterval() {
 
 startAnimationInterval()
 
-function toggleAnimation() {
+function toggleAnimation(e) {
+  e.stopPropagation()
+  e.preventDefault()
   if (el.style.webkitAnimationPlayState != 'paused') {
     el.style.webkitAnimationPlayState = 'paused'
     el.style.mozAnimationPlayState = 'paused'
@@ -32,6 +34,8 @@ function toggleAnimation() {
     el.style.mozAnimationPlayState = 'running'
     el.style.animationPlayState = 'running'
 
-		startAnimationInterval()
+    startAnimationInterval()
   }
 }
+
+document.querySelector('.stabilizer').onclick = toggleAnimation

@@ -265,7 +265,8 @@ pre {
 
 .stabilizer {
   position: absolute;
-  bottom: 16px;
+  top: 0;
+  right: 0;
 }
 
 code[class*=language-], pre[class*=language-] {
