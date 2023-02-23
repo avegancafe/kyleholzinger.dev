@@ -38,4 +38,8 @@ function toggleAnimation(e) {
   }
 }
 
-document.querySelector('.stabilizer').onclick = toggleAnimation
+const links = document.querySelectorAll('.stabilizer')
+
+for (let link of links) {
+  link.onclick = toggleAnimation
+}
