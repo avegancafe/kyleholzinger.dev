@@ -1,5 +1,5 @@
-var el = document.querySelector('.crt')
-var counter = new Date()
+const el = document.querySelector('.crt')
+let counter = new Date()
 
 function setAnimationTime(duration) {
   el.style.setProperty('--animation-time', duration + 's')
@@ -42,4 +42,59 @@ const links = document.querySelectorAll('.stabilizer')
 
 for (let link of links) {
   link.onclick = toggleAnimation
+}
+const iSpeed = 10
+const iScrollAt = 20
+const destination = document.getElementById('typedtext')
+
+function write() {
+  let iIndex = 0
+  let iArrLength = aText[0].text.length
+  let iTextPos = 0
+  let sContents = ''
+  let iRow
+
+  function typewriter() {
+    sContents = ' '
+    iRow = Math.max(0, iIndex - iScrollAt)
+
+    while (iRow < iIndex) {
+      const { text, elType } = aText[iRow]
+      sContents += `<${elType}>${text}</${elType}>` + '\n'
+      iRow++
+    }
+
+    const { text, elType } = aText[iRow]
+
+    if (iIndex == aText.length - 1) {
+      destination.innerHTML =
+        sContents + `<${elType}>${text.substring(0, iTextPos)}</${elType}>`
+    } else {
+      destination.innerHTML =
+        sContents + `<${elType}>${text.substring(0, iTextPos)}_</${elType}>`
+    }
+    if (iTextPos++ == iArrLength) {
+      iTextPos = 0
+      iIndex++
+      if (iIndex != aText.length) {
+        iArrLength = aText[iIndex].text.length
+        setTimeout(typewriter, 500)
+      }
+    } else {
+      setTimeout(typewriter, iSpeed + Math.random() * 30)
+    }
+  }
+
+  typewriter()
+}
+
+let aText
+if (content && destination) {
+  aText = Array.from(content.children).map((x) => ({
+    text: x.innerText,
+    elType: x.tagName,
+  }))
+  content.remove()
+
+  write()
 }

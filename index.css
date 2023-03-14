@@ -11,8 +11,13 @@
   background: #173e0f;
 }
 
+@font-face {
+  font-family: 'Berkeley Mono';
+  src: url('/assets/berkeley-mono.woff') url('/assets/berkeley-mono.woff2');
+}
+
 * {
-  font-family: Courier;
+  font-family: 'Berkeley Mono', Courier;
 }
 
 .stabilizer {
@@ -65,10 +70,15 @@ body {
   position: relative;
 }
 
-#content {
+#content,
+#typedtext {
   max-width: 80ch;
   margin: 8px 24px;
   padding-bottom: 48px;
+}
+
+nav {
+  margin: 8px 24px;
 }
 
 nav ul {
@@ -87,7 +97,7 @@ hr {
   border-color: #0e2a09;
 }
 
-code:not([class^="language-"]) {
+code:not([class^='language-']) {
   background: #071504;
   border-radius: 4px;
   padding: 0 4px;
@@ -291,6 +301,7 @@ body::before {
   animation: textShadow var(--animation-time) infinite;
 }
 
-code[class*=language-], pre[class*=language-] {
+code[class*='language-'],
+pre[class*='language-'] {
   line-height: 1em;
 }
