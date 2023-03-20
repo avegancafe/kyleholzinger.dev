@@ -73,6 +73,7 @@ function write() {
       destination.innerHTML =
         sContents + `<${elType}>${text.substring(0, iTextPos)}_</${elType}>`
     }
+
     if (iTextPos++ == iArrLength) {
       iTextPos = 0
       iIndex++
@@ -81,7 +82,14 @@ function write() {
         setTimeout(typewriter, 500)
       }
     } else {
-      setTimeout(typewriter, iSpeed + Math.random() * 30)
+      if (
+        text.substring(0, iTextPos).slice(-1)[0] == ' ' &&
+        text.substring(0, iTextPos).slice(-3, -1).indexOf(' ') == -1
+      ) {
+        setTimeout(typewriter, iSpeed + Math.random() * 60)
+      } else {
+        setTimeout(typewriter, iSpeed + Math.random() * 10)
+      }
     }
   }
 
