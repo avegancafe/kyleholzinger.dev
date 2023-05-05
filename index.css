@@ -23,7 +23,7 @@
 .stabilizer {
   position: absolute;
   top: 0;
-  right: 0;
+  right: 24px;
 }
 
 .stabilizer--mobile {
