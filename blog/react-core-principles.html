@@ -1,6 +1,6 @@
 <html !DOCTYPE lang="en-us">
   <head>
-    <title>Untitled | Blog posts</title>
+    <title>React Core Principles</title>
     <meta name="HandheldFriendly" content="true" />
     <meta name="MobileOptimized" content="320" />
 
@@ -37,6 +37,10 @@
       async
       defer
     ></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="/index.css" />
   </head>
   <body class="crt">
@@ -50,24 +54,54 @@
         <li><a href="https://twitter.com/kyleholzinger">twitter</a></li>
       </ul>
     </nav>
+
     <div id="content">
       <h2><a href="/">UNTITLED</a></h2>
-      <h1>Blog posts</h1>
+      <h1>React Core Principles</h1>
+      <p>May 3, 2023</p>
+      <p><i>Guidelines for writing maintainable react applications</i></p>
+      <p>
+        After working with react for quite a few years (I think 8?), I've
+        noticed some patterns that I tend to stick with. They're not super hard
+        and fast rules, but more so guidelines that I try to use as a first
+        instinct when using react. They may be applicable to other
+        libraries/frameworks, and I'm sure some of them are informed by my work
+        in other environments, but these are specifically targeted at react.
+      </p>
       <ul>
-        <li><a href="inspiration.html">Inspiration</a></li>
-        <li><a href="ipfs-nft.html">Deploying an IPFS-Backed NFT</a></li>
-        <li><a href="react-core-principles.html">React Core Principles</a></li>
+        <li>Avoid useEffect</li>
+        <li>Use custom hooks to isolate complex behavior</li>
+        <li>Compound components can clean up component APIs</li>
       </ul>
+
+      <p>
+        There are probably some others that I'm missing, but I think these are
+        the big three. Let's get into them.
+      </p>
+
+      <h2>Avoid <code>useEffect</code></h2>
+      <p>
+        One of the things I've noticed when working in react codebases is that
+        it's very easy to fall into the trap of using useEffect for a wide
+        variety of scenarios. E.g. updating a computed property, async fetching
+        some data, etc. But IMO, this is a trap. As much as physically possible,
+        I try to push these "effects" into something like a callback or event
+        handler or something of the sort.
+      </p>
+
+      <h2>Use custom hooks</h2>
+
+      <h2>Use compound components</h2>
+
       <a href="#" class="stabilizer">stabilize</a>
       <a href="#" class="stabilizer stabilizer--mobile">stabilize</a>
       <script src="/index.js"></script>
       <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/components/prism-core.min.js"
-        integrity="sha512-x0aNx8s5fNTSk7iaTiSuUtz6vbT7gtGjk+Dotp17u4TmUEbJUwNMUFKxMBlnMQ1+N8E5exPHvRcF1yoxJ8b/iA=="
+        src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"
         crossorigin="anonymous"
         referrerpolicy="no-referrer"
       ></script>
-      <script src="https://www.jsdelivr.com/package/npm/prismjs@v1.x/plugins/autoloader/prism-autoloader.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
     </div>
   </body>
 </html>
