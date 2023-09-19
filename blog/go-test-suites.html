@@ -1,0 +1,161 @@
+<html !DOCTYPE lang="en-us">
+  <head>
+    <title>Inspiration</title>
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="MobileOptimized" content="320" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:creator" content="@kyleholzinger" />
+    <meta name="twitter:description" content="kyle's blog" />
+    <meta
+      name="twitter:image"
+      content="https://kyleholzinger.dev/assets/untitled-2.png"
+    />
+    <meta name="twitter:title" content="UNTITLED" />
+
+    <meta property="og:site_name" content="UNTITLED" />
+    <meta property="og:description" content="kyle's blog" />
+    <meta name="og:url" content="https://kyleholzinger.dev" />
+    <meta name="og:title" content="UNTITLED" />
+    <meta
+      name="og:image"
+      content="https://kyleholzinger.dev/assets/untitled-2.png"
+    />
+
+    <meta
+      name="viewport"
+      content="initial-scale=1.0, maximum-scale=5.0, width=device-width"
+    />
+    <meta charset="UTF-8" />
+    <meta name="author" content="Kyle Holzinger" />
+
+    <script
+      data-host="https://microanalytics.io"
+      data-dnt="false"
+      src="https://microanalytics.io/js/script.js"
+      id="ZwSg9rf6GA"
+      async
+      defer
+    ></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/index.css" />
+  </head>
+  <body class="crt">
+    <nav>
+      <ul>
+        <li><a href="/blog/">blog</a></li>
+        <li><a href="https://github.com/avegancafe">github</a></li>
+        <li>
+          <a href="https://www.instagram.com/kyleholzinger/">ig</a>
+        </li>
+        <li><a href="https://twitter.com/kyleholzinger">twitter</a></li>
+      </ul>
+    </nav>
+
+    <div id="content">
+      <h2><a href="/">UNTITLED</a></h2>
+      <h1>Golang Test Suites</h1>
+      <p>Sep 18, 2022</p>
+      <p>
+        Over the course of my career it's become increasingly evident that it's
+        nearly impossible to have a test suite for a monolith that runs
+        efficiently, reliably, and frequently. Between physical hardware
+        requirements, race conditions in your application, and competing
+        priorities, I find it incredibly difficult to maintain a reliable test
+        suite that can provide useful signal to engineers continually shipping
+        changes to an application.
+      </p>
+      <p>
+        That brings us to my current predicament. I am currently working on a
+        golang application (specifically go v1.18, this is important), and am
+        finding it difficult getting the team to rally behind fixing tests that
+        sporadically fail. Our hardware limitations are pretty set in stone, so
+        the primary levers we have to pull are either fix the tests, or change
+        the infrastructure to accomodate for these flaky tests. While I believe
+        the former is preferable, this will be discussing how to address the
+        latter in a golang environment.
+      </p>
+      <h2>Build Flags</h2>
+      <p>
+        When I was first starting to look into this, I was pretty sure that
+        <code>go test</code>
+        had the ability to filter what tests to run by a file regex. Turns out,
+        although it has a decently robust API, it does not. Moreso, the only way
+        to run a specific test is by specifying the actual test name! In case
+        you are unfamiliar with how go tests are writte, you define a test by
+        declaring some function like:
+      </p>
+      <pre><code>function TestAddNumbers(t *testing.T) {...</code></pre>
+      <p>
+        You would have to run <code>go test -run TestAddNumbers</code> in order
+        to target running only this test. Now, let's say you have a bunch of
+        integration tests that are testing your web layer. Those kinds of tests
+        are super useful, but unfortunately in our case also a little
+        unreliable. My first gut instinct is to split these tests out into their
+        own test suite, run them on their own, maybe enable some retry logic at
+        a high level, etc. That's where build flags come in.
+      </p>
+      <p>
+        In go, when you run <code>go test</code>, it has to build your test
+        suite before running your tests. This has the unfortunate side effect fo
+        not being able to specify which files you want to run after the fact and
+        in its stead, you have to tell the compiler which specific files to
+        include at build time. Let's take an example:
+      </p>
+      <pre><code>function TestAddNumbers(t *testing.T) {
+  expect.Equal(1 + 1, 2)
+}</code></pre>
+      <pre><code>function TestSubtractNumbers(t *testing.T) {
+  expect.Equal(1 - 1, 0)
+}</code></pre>
+      <pre><code>function TestUnreliableThing(t *testing.T) {
+  expect.Equal(...)
+}</code></pre>
+      <p>
+        We specifically want to run <code>TestAddNumbers</code> and
+        <code>TestSubtractNumbers</code>, and omit
+        <code>TestUnreliableThing</code>, while we could manually provide all of
+        the names of the tests to <code>-run</code> and <code>-skip</code>, this
+        is both cumbersome and also completely unscalable. In order to achieve
+        this, I've found the best way is with build flags. In order to do this,
+        you can change the tests to something like:
+      </p>
+      <pre><code>// +build unit
+
+function TestAddNumbers(t *testing.T) {
+  expect.Equal(1 + 1, 2)
+}</code></pre>
+      <pre><code>// +build unit
+
+function TestSubtractNumbers(t *testing.T) {
+  expect.Equal(1 - 1, 0)
+}</code></pre>
+      <pre><code>// +build integration
+
+function TestUnreliableThing(t *testing.T) {
+  expect.Equal(...)
+}</code></pre>
+      <p>
+        These flags allow us to run our go tests with
+        <code>go test -tags unit</code> or
+        <code>go test -tags integration</code>, and only the correspondingly
+        tagged files will run. That's it! Some caveats here, you have to make
+        sure your build flag is the very first line of the file, and it has to
+        be followed by a newline otherwise the go compiler will think it's a
+        normal comment.
+      </p>
+      <a href="#" class="stabilizer">stabilize</a>
+      <a href="#" class="stabilizer stabilizer--mobile">stabilize</a>
+      <script src="/index.js"></script>
+      <script
+        src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+      ></script>
+      <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    </div>
+  </body>
+</html>
