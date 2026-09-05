@@ -63,7 +63,6 @@
 
         --gutter: clamp(16px, 4vw, 48px);
 
-        --tickrule: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='%230D2B52' stroke-width='2'%3E%3Cpath d='M0 22 H24'/%3E%3Cpath d='M1 22 V7'/%3E%3Cpath d='M7 22 V15'/%3E%3Cpath d='M13 22 V15'/%3E%3Cpath d='M19 22 V15'/%3E%3C/g%3E%3C/svg%3E");
       }
 
       *,
@@ -525,17 +524,16 @@
 
       /* ---------- band + footer ---------- */
 
+      /* two parallel rules with an 8px gap. box-sizing is border-box, so the
+         height has to carry both 2px rules plus the gap. */
       .band {
-        height: 32px;
-        background-image: var(--tickrule);
-        background-repeat: repeat-x;
-        background-position: center bottom;
-        border-top: 2px solid var(--ink);
+        height: 12px;
+        border-top: 2px solid var(--cyan);
+        border-bottom: 2px solid var(--cyan);
       }
 
       footer {
         padding: clamp(48px, 7vw, 80px) var(--gutter) clamp(64px, 9vw, 104px);
-        border-top: 2px solid var(--ink);
       }
 
       footer h2 {
@@ -564,16 +562,33 @@
         }
 
         /* all four tabs must fit, or the last one looks like it isn't there */
-        /* the brackets cost width; all four tabs still have to fit or the
-           last one falls off the edge and looks like it isn't there */
-        .tab {
-          padding: 14px 4px;
-          font-size: 0.64rem;
-          letter-spacing: 0.01em;
+        /* Four labels won't fit on one phone-width row without shrinking the
+           type past readable. Wrap to 2x2 instead: every tab stays fully
+           visible and the type goes back up. */
+        .tabs {
+          flex-wrap: wrap;
+          overflow-x: visible;
         }
 
-        .tab-dot {
-          margin: 0 2px;
+        .tab {
+          flex: 1 0 50%;
+          max-width: 50%;
+          padding: 13px 10px;
+          font-size: 0.72rem;
+          letter-spacing: 0.04em;
+        }
+
+        .tab:nth-child(odd) {
+          border-right: 2px solid var(--ink);
+        }
+
+        .tab:nth-child(even) {
+          border-right: 0;
+        }
+
+        .tab:nth-child(1),
+        .tab:nth-child(2) {
+          border-bottom: 2px solid var(--ink);
         }
       }
 
@@ -695,7 +710,7 @@
           >
             <span class="tab-index" aria-hidden="true">04</span>
             <span class="tab-dot" aria-hidden="true">・</span>
-            Us
+            About us
           </button>
         </div>
       </nav>
@@ -735,7 +750,7 @@
             <span class="value"
               ><time datetime="2027-07-09">July 9, 2027</time></span
             >
-            <dd>A Friday. Clear the evening.</dd>
+            <dd>The Friday. Clear the evening.</dd>
           </div>
           <div>
             <dt class="telemetry">Place</dt>
