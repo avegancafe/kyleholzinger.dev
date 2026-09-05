@@ -52,6 +52,10 @@
         --substrate: #eae8e3;
         --ink: #111111;
         --red: #e61919;
+        /* cyanotype: Prussian blue shadow, washed paper highlight. Matches the
+           scanned graphic going on the paper invites. */
+        --cyan: #0d2b52;
+        --cyan-wash: #dbe4ef;
 
         --macro: "Archivo Black", "Archivo", system-ui, sans-serif;
         --body: "Archivo", system-ui, sans-serif;
@@ -59,7 +63,7 @@
 
         --gutter: clamp(16px, 4vw, 48px);
 
-        --meander: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='%23E61919' stroke-width='3'%3E%3Cpath d='M0 21 H24'/%3E%3Cpath d='M21 21 V3 H6 V15 H15 V9 H10.5'/%3E%3C/g%3E%3C/svg%3E");
+        --meander: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='%230D2B52' stroke-width='3'%3E%3Cpath d='M0 21 H24'/%3E%3Cpath d='M21 21 V3 H6 V15 H15 V9 H10.5'/%3E%3C/g%3E%3C/svg%3E");
       }
 
       *,
@@ -70,6 +74,7 @@
 
       html {
         scroll-behavior: smooth;
+        scroll-padding-top: 56px;
       }
 
       body {
@@ -151,47 +156,63 @@
         color: var(--red);
       }
 
-      /* the drawer: a second header that slides down from the top edge once the
-         hero is fully out of view. visibility keeps it off the tab order while
-         closed, and is delayed so the retract still animates. */
-      .drawer {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 9;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 4px 28px;
-        padding: 12px var(--gutter);
-        background: var(--paper);
-        border-bottom: 2px solid var(--ink);
-        transform: translateY(-100%);
-        visibility: hidden;
-        transition: transform 0.28s ease, visibility 0s linear 0.28s;
-      }
-
-      .drawer.is-open {
-        transform: translateY(0);
-        visibility: visible;
-        transition: transform 0.28s ease, visibility 0s;
-      }
-
-      .drawer .red {
-        color: var(--red);
-      }
-
-      .drawer .top-link {
-        margin-left: auto;
-      }
-
-      /* keep anchored content clear of the drawer */
-      #invitation {
-        scroll-margin-top: 76px;
-      }
-
       .bay {
         padding-inline: var(--gutter);
+      }
+
+      .tabbar {
+        position: sticky;
+        top: 0;
+        z-index: 9;
+        background: var(--paper);
+        border-top: 2px solid var(--ink);
+        border-bottom: 2px solid var(--ink);
+      }
+
+      .tabs {
+        display: flex;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .tabs::-webkit-scrollbar {
+        display: none;
+      }
+
+      .tab {
+        flex: 1 0 auto;
+        appearance: none;
+        background: var(--paper);
+        color: var(--ink);
+        border: 0;
+        border-right: 2px solid var(--ink);
+        padding: 15px 22px;
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: background 0.15s ease, color 0.15s ease;
+      }
+
+      .tab:last-child {
+        border-right: 0;
+      }
+
+      .tab[aria-selected="true"] {
+        background: var(--ink);
+        color: var(--paper);
+      }
+
+      .tab:focus-visible {
+        outline: 3px solid var(--red);
+        outline-offset: -3px;
+      }
+
+      .panel[hidden] {
+        display: none;
       }
 
       /* ---------- doorway ---------- */
@@ -412,6 +433,30 @@
         display: block;
         aspect-ratio: 4 / 5;
         object-fit: cover;
+        background: var(--cyan-wash);
+        filter: url(#cyanotype);
+      }
+
+      /* Slot for the scanned cyanotype once it exists. Drop the scan at
+         /assets/wedding/cyanotype.jpg and uncomment the <figure> in the
+         "The day" panel — no other change needed. */
+      .exposure {
+        margin: 0 0 40px;
+        border: 2px solid var(--ink);
+        background: var(--cyan-wash);
+      }
+
+      .exposure img {
+        width: 100%;
+        display: block;
+        aspect-ratio: 3 / 2;
+        object-fit: cover;
+      }
+
+      .exposure figcaption {
+        padding: 12px 16px;
+        border-top: 2px solid var(--ink);
+        color: var(--cyan);
       }
 
       .pos-mid {
@@ -429,7 +474,7 @@
       }
 
       .plates figcaption .idx {
-        color: var(--red);
+        color: var(--cyan);
         margin-right: 8px;
       }
 
@@ -472,6 +517,12 @@
         .plates {
           grid-template-columns: minmax(0, 1fr);
         }
+
+        /* all four tabs must fit, or the last one looks like it isn't there */
+        .tab {
+          padding: 14px 10px;
+          letter-spacing: 0.05em;
+        }
       }
 
       @media (max-width: 720px) {
@@ -495,8 +546,7 @@
           scroll-behavior: auto;
         }
 
-        .drawer,
-        .drawer.is-open {
+        .tab {
           transition: none;
         }
 
@@ -509,11 +559,16 @@
   </head>
 
   <body>
-    <div class="drawer telemetry" id="drawer">
-      <span>Kyle &amp; Elise&nbsp;&reg;</span>
-      <span class="red">Friday, July 9, 2027</span>
-      <a class="top-link" href="#top">[ Top ]</a>
-    </div>
+    <svg width="0" height="0" aria-hidden="true" focusable="false">
+      <filter id="cyanotype" color-interpolation-filters="sRGB">
+        <feColorMatrix type="saturate" values="0" />
+        <feComponentTransfer>
+          <feFuncR type="table" tableValues="0.05 0.86" />
+          <feFuncG type="table" tableValues="0.17 0.90" />
+          <feFuncB type="table" tableValues="0.32 0.96" />
+        </feComponentTransfer>
+      </filter>
+    </svg>
 
     <div class="entry" id="top">
       <div class="strip telemetry">
@@ -546,10 +601,72 @@
         </p>
       </header>
 
-      <hr class="rule" />
+      <nav class="tabbar" id="tabbar" aria-label="Sections">
+        <div class="tabs" role="tablist" aria-label="Wedding details">
+          <button
+            class="tab"
+            id="tab-day"
+            type="button"
+            role="tab"
+            aria-controls="panel-day"
+            aria-selected="true"
+            tabindex="0"
+          >
+            The day
+          </button>
+          <button
+            class="tab"
+            id="tab-next"
+            type="button"
+            role="tab"
+            aria-controls="panel-next"
+            aria-selected="false"
+            tabindex="-1"
+          >
+            The next day
+          </button>
+          <button
+            class="tab"
+            id="tab-travel"
+            type="button"
+            role="tab"
+            aria-controls="panel-travel"
+            aria-selected="false"
+            tabindex="-1"
+          >
+            Travel
+          </button>
+          <button
+            class="tab"
+            id="tab-us"
+            type="button"
+            role="tab"
+            aria-controls="panel-us"
+            aria-selected="false"
+            tabindex="-1"
+          >
+            Us
+          </button>
+        </div>
+      </nav>
 
+      <div
+        class="panel"
+        id="panel-day"
+        role="tabpanel"
+        aria-labelledby="tab-day"
+      >
       <section class="bay">
         <h2>Where things stand</h2>
+
+        <!-- The scanned cyanotype goes here. Save it as
+             /assets/wedding/cyanotype.jpg and uncomment this block; the
+             .exposure styles are already in place.
+        <figure class="exposure">
+          <img src="/assets/wedding/cyanotype.jpg" alt="Cyanotype print made for the invitations" />
+          <figcaption class="telemetry">Cyanotype, exposed by hand</figcaption>
+        </figure>
+        -->
         <div class="prose">
           <p>
             Four years in and still enthusiastic about each other, which
@@ -597,9 +714,14 @@
           </div>
         </dl>
       </section>
+      </div>
 
-      <hr class="rule" />
-
+      <div
+        class="panel"
+        id="panel-next"
+        role="tabpanel"
+        aria-labelledby="tab-next"
+      >
       <section class="bay">
         <h2>The next day</h2>
         <p class="prose">
@@ -638,9 +760,14 @@
           </div>
         </dl>
       </section>
+      </div>
 
-      <hr class="rule" />
-
+      <div
+        class="panel"
+        id="panel-travel"
+        role="tabpanel"
+        aria-labelledby="tab-travel"
+      >
       <section class="bay">
         <h2>Getting there</h2>
         <p class="prose">
@@ -727,9 +854,14 @@
           </div>
         </dl>
       </section>
+      </div>
 
-      <hr class="rule" />
-
+      <div
+        class="panel"
+        id="panel-us"
+        role="tabpanel"
+        aria-labelledby="tab-us"
+      >
       <section class="bay">
         <h2>The household</h2>
 
@@ -886,6 +1018,7 @@
           </li>
         </ul>
       </section>
+      </div>
     </main>
 
     <div class="band" role="presentation"></div>
@@ -903,18 +1036,68 @@
       </div>
     </footer>
     <script>
-      // Reveal the drawer only once the hero has left the viewport entirely.
-      // IntersectionObserver rather than a scroll listener so this costs
-      // nothing per frame. No JS means no drawer, which the page survives.
-      const drawer = document.getElementById("drawer");
-      const hero = document.getElementById("top");
+      // Panels ship visible, so with JS off the page is just the long scroll
+      // it was before. Everything below is enhancement.
+      (function () {
+        const tabs = [...document.querySelectorAll('[role="tab"]')];
+        if (!tabs.length) return;
 
-      if (drawer && hero && "IntersectionObserver" in window) {
-        new IntersectionObserver(
-          ([entry]) => drawer.classList.toggle("is-open", !entry.isIntersecting),
-          { threshold: 0 }
-        ).observe(hero);
-      }
+        const keyOf = (tab) => tab.id.replace("tab-", "");
+        const panelOf = (tab) =>
+          document.getElementById(tab.getAttribute("aria-controls"));
+
+        function select(key, { focus = false, scroll = false } = {}) {
+          const target = tabs.find((t) => keyOf(t) === key) || tabs[0];
+
+          tabs.forEach((tab) => {
+            const on = tab === target;
+            tab.setAttribute("aria-selected", String(on));
+            tab.tabIndex = on ? 0 : -1;
+            panelOf(tab).hidden = !on;
+          });
+
+          if (focus) target.focus();
+          if (scroll) {
+            const bar = document.getElementById("tabbar");
+            if (bar.getBoundingClientRect().top < 0) bar.scrollIntoView();
+          }
+        }
+
+        tabs.forEach((tab) => {
+          tab.addEventListener("click", () => {
+            // no element carries these ids, so the hash never triggers a jump
+            history.pushState(null, "", "#" + keyOf(tab));
+            select(keyOf(tab), { scroll: true });
+          });
+        });
+
+        document.querySelector('[role="tablist"]').addEventListener(
+          "keydown",
+          (event) => {
+            const step = { ArrowRight: 1, ArrowLeft: -1 }[event.key];
+            let next;
+
+            if (step) {
+              const i = tabs.findIndex(
+                (t) => t.getAttribute("aria-selected") === "true"
+              );
+              next = tabs[(i + step + tabs.length) % tabs.length];
+            } else if (event.key === "Home") next = tabs[0];
+            else if (event.key === "End") next = tabs[tabs.length - 1];
+            else return;
+
+            event.preventDefault();
+            history.replaceState(null, "", "#" + keyOf(next));
+            select(keyOf(next), { focus: true });
+          }
+        );
+
+        addEventListener("hashchange", () =>
+          select(location.hash.slice(1), { scroll: true })
+        );
+
+        select(location.hash.slice(1));
+      })();
     </script>
   </body>
 </html>
