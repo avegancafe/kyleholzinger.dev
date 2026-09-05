@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="author" content="Kyle Holzinger" />
+    <link rel="icon" href="/favicon.ico" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:creator" content="@kyleholzinger" />
@@ -41,20 +42,24 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,400;0,500;0,700;1,400&family=Syne:wght@700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Archivo+Black&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
 
     <style>
       :root {
-        --marble: #dfe6e3;
-        --plaster: #f6f2ec;
-        --slip: #241c19;
-        --oxide: #c0492b;
-        --ochre: #e0a32e;
-        --aegean: #1b5e7e;
+        --paper: #f4f4f0;
+        --substrate: #eae8e3;
+        --ink: #111111;
+        --red: #e61919;
 
-        --meander: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='%23C0492B' stroke-width='3'%3E%3Cpath d='M0 21 H24'/%3E%3Cpath d='M21 21 V3 H6 V15 H15 V9 H10.5'/%3E%3C/g%3E%3C/svg%3E");
+        --macro: "Archivo Black", "Archivo", system-ui, sans-serif;
+        --body: "Archivo", system-ui, sans-serif;
+        --mono: "JetBrains Mono", ui-monospace, monospace;
+
+        --gutter: clamp(16px, 4vw, 48px);
+
+        --meander: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='%23E61919' stroke-width='3'%3E%3Cpath d='M0 21 H24'/%3E%3Cpath d='M21 21 V3 H6 V15 H15 V9 H10.5'/%3E%3C/g%3E%3C/svg%3E");
       }
 
       *,
@@ -63,271 +68,377 @@
         box-sizing: border-box;
       }
 
+      html {
+        scroll-behavior: smooth;
+      }
+
       body {
         margin: 0;
-        background: var(--marble);
-        color: var(--slip);
-        font-family: Karla, system-ui, sans-serif;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: var(--body);
         font-size: 17px;
-        line-height: 1.6;
+        line-height: 1.55;
         -webkit-font-smoothing: antialiased;
       }
 
-      h1,
-      h2,
-      .shout {
-        font-family: Syne, system-ui, sans-serif;
-        font-weight: 800;
-        letter-spacing: -0.02em;
-        line-height: 1.02;
-        margin: 0;
+      /* mechanical noise — keeps flat vectors from reading as sterile */
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 10;
+        pointer-events: none;
+        opacity: 0.05;
+        mix-blend-mode: multiply;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
       }
 
       a {
-        color: var(--aegean);
+        color: var(--ink);
       }
 
-      a:focus-visible,
-      .arch:focus-visible {
-        outline: 3px solid var(--aegean);
-        outline-offset: 4px;
+      a:focus-visible {
+        outline: 3px solid var(--red);
+        outline-offset: 3px;
       }
 
-      .wrap {
-        max-width: 62rem;
-        margin: 0 auto;
-        padding: 0 24px;
+      /* ---------- type ---------- */
+
+      .macro {
+        font-family: var(--macro);
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: -0.04em;
+        line-height: 0.86;
+        margin: 0;
+        text-wrap: balance;
+      }
+
+      .telemetry {
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        font-variant-numeric: tabular-nums;
+      }
+
+      p {
+        text-wrap: pretty;
       }
 
       .prose {
-        max-width: 34rem;
+        max-width: 60ch;
+      }
+
+      .rule {
+        border: 0;
+        border-top: 2px solid var(--ink);
+        margin: 0;
+      }
+
+      /* ---------- structural frame ---------- */
+
+      .strip {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 28px;
+        padding: 12px var(--gutter);
+        border-bottom: 2px solid var(--ink);
+      }
+
+      .strip .red {
+        color: var(--red);
+      }
+
+      .bay {
+        padding-inline: var(--gutter);
       }
 
       /* ---------- doorway ---------- */
 
       .doorway {
-        min-height: 100vh;
-        min-height: 100svh;
         display: grid;
-        grid-template-rows: 1fr auto;
-        justify-items: center;
-        padding: 32px 24px 0;
+        grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+        min-height: calc(100dvh - 46px);
         text-decoration: none;
-        color: inherit;
+        border-bottom: 2px solid var(--ink);
       }
 
-      .arch {
-        align-self: center;
-        width: min(54vh, 84vw);
-        aspect-ratio: 3 / 4;
-        border-radius: 9999px 9999px 0 0;
-        overflow: hidden;
-        background: var(--oxide);
-        box-shadow: 0 0 0 6px var(--oxide);
+      .doorway-plate {
         position: relative;
+        min-height: 0;
+        border-right: 2px solid var(--ink);
+        overflow: hidden;
       }
 
-      .arch img {
+      /* absolute so the photo's intrinsic height can't stretch the row —
+         otherwise the box matches the source ratio and cover never crops */
+      .doorway-plate img {
+        position: absolute;
+        inset: 0;
         width: 100%;
         height: 100%;
         object-fit: cover;
-        object-position: center 72%;
+        object-position: center bottom;
         display: block;
       }
 
-      .doorway-words {
-        text-align: center;
-        padding: 28px 0 40px;
+      .doorway-hail {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 40px var(--gutter) clamp(32px, 5vw, 64px)
+          clamp(16px, 3vw, 40px);
       }
 
-      .doorway-words .shout {
-        font-size: clamp(2.4rem, 9vw, 4.6rem);
-        color: var(--oxide);
-        text-transform: lowercase;
+      .doorway-hail .macro {
+        font-size: clamp(2.6rem, 8.5vw, 7rem);
       }
 
-      .doorway-words p {
-        margin: 10px 0 0;
-        font-size: 1.05rem;
-        text-decoration: underline;
-        text-decoration-color: var(--ochre);
-        text-decoration-thickness: 3px;
-        text-underline-offset: 6px;
+      .doorway-hail .macro em {
+        font-style: normal;
+        color: var(--red);
       }
 
-      .band {
-        height: 48px;
-        background-image: var(--meander);
-        background-repeat: repeat-x;
-        background-position: center bottom;
+      .enter {
+        margin-top: 28px;
+        color: var(--red);
       }
 
       /* ---------- masthead ---------- */
 
       .masthead {
-        padding: 80px 0 8px;
+        padding: clamp(48px, 8vw, 96px) var(--gutter) clamp(40px, 6vw, 72px);
       }
 
       .masthead h1 {
-        font-size: clamp(3rem, 13vw, 8.5rem);
-        text-transform: uppercase;
+        font-size: clamp(3.2rem, 15vw, 12rem);
       }
 
       .masthead h1 .amp {
-        color: var(--oxide);
-        margin-right: 0.14em;
+        color: var(--red);
+        margin-left: 0.1em;
       }
 
-      .lede {
-        font-size: 1.35rem;
-        margin: 24px 0 0;
-        max-width: 30rem;
+      .masthead .lede {
+        font-size: clamp(1.1rem, 2.4vw, 1.5rem);
+        max-width: 44ch;
+        margin: clamp(24px, 4vw, 40px) 0 0;
       }
+
+      /* ---------- sections ---------- */
 
       section {
-        padding: 56px 0;
+        padding-block: clamp(48px, 7vw, 88px) clamp(56px, 8vw, 104px);
       }
 
-      section h2 {
-        font-size: clamp(1.7rem, 4.5vw, 2.6rem);
-        margin-bottom: 28px;
+      section > h2 {
+        font-family: var(--macro);
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: -0.03em;
+        line-height: 0.92;
+        font-size: clamp(1.9rem, 5.5vw, 3.4rem);
+        margin: 0 0 8px;
+        text-wrap: balance;
       }
 
-      /* ---------- details ---------- */
+      section > .prose {
+        margin: 20px 0 40px;
+      }
+
+      /* ---------- data compartments ---------- */
 
       .facts {
-        margin: 0;
+        margin: 32px 0 0;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
         gap: 2px;
-        background: var(--slip);
-        border: 2px solid var(--slip);
+        background: var(--ink);
+        border: 2px solid var(--ink);
       }
 
       .facts > div {
-        background: var(--plaster);
-        padding: 22px 24px 26px;
+        background: var(--substrate);
+        padding: 20px 22px 26px;
+        display: flex;
+        flex-direction: column;
       }
 
       .facts dt {
-        font-family: Syne, sans-serif;
-        font-weight: 700;
-        font-size: 1.1rem;
-        color: var(--aegean);
+        color: var(--red);
       }
 
-      .facts dd {
-        margin: 4px 0 0;
-      }
-
-      .stamp {
-        display: inline-block;
-        font-family: Syne, sans-serif;
-        font-weight: 800;
-        font-size: 2rem;
-        color: var(--oxide);
+      .facts .value {
+        font-family: var(--macro);
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: -0.03em;
+        font-size: clamp(1.6rem, 4vw, 2.1rem);
         line-height: 1;
-        margin-bottom: 6px;
+        margin: 14px 0 10px;
       }
 
-      /* ---------- pictures ---------- */
-
-      .frieze {
-        list-style: none;
+      /* pin descriptions to the cell floor so they share a baseline even when
+         the values wrap to different line counts */
+      .facts dd {
         margin: 0;
+        margin-top: auto;
+        padding-top: 14px;
+        font-size: 1rem;
+      }
+
+      /* ---------- roster ---------- */
+
+      .roster {
+        margin: 32px 0 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+        gap: 2px;
+        background: var(--ink);
+        border: 2px solid var(--ink);
+      }
+
+      .roster > div {
+        background: var(--substrate);
+        padding: 18px 22px 22px;
+      }
+
+      .roster dt {
+        font-family: var(--macro);
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: -0.02em;
+        font-size: 1.5rem;
+        line-height: 1;
+      }
+
+      .roster .tag {
+        display: block;
+        color: var(--red);
+        margin-top: 10px;
+      }
+
+      .roster dd {
+        margin: 8px 0 0;
+        font-size: 1rem;
+      }
+
+      /* ---------- plates ---------- */
+
+      .plates {
+        list-style: none;
+        margin: 32px 0 0;
         padding: 0;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-        gap: 28px 24px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 2px;
+        background: var(--ink);
+        border: 2px solid var(--ink);
       }
 
-      .frieze li {
+      .plates li {
+        background: var(--substrate);
         display: flex;
       }
 
-      .frieze figure {
+      .plates figure {
         margin: 0;
         display: flex;
         flex-direction: column;
         width: 100%;
       }
 
-      .frieze img {
+      .plates img {
         width: 100%;
         display: block;
-        aspect-ratio: 3 / 4;
+        aspect-ratio: 4 / 5;
         object-fit: cover;
-        background: var(--plaster);
       }
 
-      .frieze figcaption {
+      .pos-mid {
+        object-position: center 58%;
+      }
+
+      .pos-low {
+        object-position: center bottom;
+      }
+
+      .plates figcaption {
         margin-top: auto;
-        padding-top: 10px;
+        padding: 12px 16px 16px;
         font-size: 0.95rem;
       }
 
-      .frieze li:nth-child(3n + 1) img {
-        border-radius: 9999px 9999px 0 0;
-        box-shadow: 0 0 0 3px var(--oxide);
+      .plates figcaption .idx {
+        color: var(--red);
+        margin-right: 8px;
       }
 
-      .frieze li:nth-child(3n + 2) img {
-        aspect-ratio: 1;
-        border-radius: 50%;
-        box-shadow: 0 0 0 3px var(--ochre);
+      /* ---------- band + footer ---------- */
+
+      .band {
+        height: 28px;
+        background-image: var(--meander);
+        background-repeat: repeat-x;
+        background-position: center bottom;
+        border-top: 2px solid var(--ink);
       }
-
-      .frieze li:nth-child(3n + 3) img {
-        box-shadow: 0 0 0 3px var(--aegean);
-      }
-
-      /* ---------- household ---------- */
-
-      .roster {
-        list-style: none;
-        margin: 0 0 40px;
-        padding: 0;
-        max-width: 34rem;
-      }
-
-      .roster li {
-        display: flex;
-        gap: 14px;
-        padding: 12px 0;
-        border-bottom: 2px solid var(--marble);
-        border-bottom-color: rgba(36, 28, 25, 0.15);
-      }
-
-      .roster b {
-        font-family: Syne, sans-serif;
-        font-weight: 700;
-        min-width: 6.5rem;
-      }
-
-      /* ---------- footer ---------- */
 
       footer {
-        padding: 64px 0 80px;
-        text-align: center;
+        padding: clamp(48px, 7vw, 80px) var(--gutter) clamp(64px, 9vw, 104px);
+        border-top: 2px solid var(--ink);
       }
 
-      footer .shout {
-        font-size: 1.6rem;
-        color: var(--oxide);
+      footer h2 {
+        font-family: var(--macro);
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: -0.03em;
+        font-size: clamp(1.8rem, 5vw, 3rem);
+        margin: 0 0 20px;
       }
 
-      footer p {
-        max-width: 30rem;
-        margin: 12px auto 0;
+      footer .prose {
+        margin: 0;
       }
 
-      .homelink {
-        display: inline-block;
-        margin-top: 28px;
-        font-size: 0.9rem;
+      .signoff {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 28px;
+        margin-top: 44px;
+      }
+
+      @media (max-width: 560px) {
+        .plates {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+
+      @media (max-width: 720px) {
+        .doorway {
+          grid-template-columns: 1fr;
+        }
+
+        .doorway-plate {
+          min-height: 54dvh;
+          border-right: 0;
+          border-bottom: 2px solid var(--ink);
+        }
+
+        .doorway-hail {
+          padding: 32px var(--gutter) 44px;
+        }
       }
 
       @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
         * {
           animation: none !important;
           transition: none !important;
@@ -337,85 +448,104 @@
   </head>
 
   <body>
+    <div class="strip telemetry">
+      <span>Kyle &amp; Elise&nbsp;&reg;</span>
+      <span>Brooklyn, NY</span>
+      <span>Together since 2021</span>
+      <span class="red">Status // engaged</span>
+    </div>
+
     <a class="doorway" href="#invitation">
-      <div class="arch">
+      <div class="doorway-plate">
         <img
           src="/assets/wedding/hello-there.jpg"
-          alt="Kyle and Elise leaning into the camera in sunglasses under a pressed-tin ceiling"
+          alt="Kyle and Elise leaning close to the camera in sunglasses under a pressed-tin ceiling"
         />
       </div>
-      <div class="doorway-words">
-        <span class="shout">oh hello there</span>
-        <p>come in</p>
+      <div class="doorway-hail">
+        <p class="macro">Oh hello <em>there</em></p>
+        <span class="enter telemetry">[ Enter ]</span>
       </div>
     </a>
 
-    <div class="band" role="presentation"></div>
-
-    <main class="wrap" id="invitation">
+    <main id="invitation">
       <header class="masthead">
-        <h1>Kyle<br /><span class="amp">&amp;</span>Elise</h1>
+        <h1 class="macro">Kyle<span class="amp">&amp;</span><br />Elise</h1>
         <p class="lede">
-          are getting married. We have known this for a while and have told
-          almost no one, so congratulations on being early.
+          are getting married. We have known this for a while and told almost
+          nobody, so congratulations on being early.
         </p>
       </header>
 
-      <section>
+      <hr class="rule" />
+
+      <section class="bay">
         <h2>Where things stand</h2>
         <div class="prose">
           <p>
-            Four years in, still enthusiastic about each other, which everyone
-            says is the entire trick. We live in Brooklyn with a cat and a dog
-            who have never once agreed on anything.
+            Four years in and still enthusiastic about each other, which
+            everyone assures us is the entire trick. We live in Brooklyn with a
+            cat and a dog who have never once agreed on anything.
           </p>
           <p>
-            This page is where the details go as we pin them down. Nothing here
-            is a hint. There is genuinely nothing to read into yet.
+            Details go here as we pin them down. Nothing below is a hint. There
+            is genuinely nothing to read into yet.
           </p>
         </div>
-      </section>
 
-      <section>
-        <h2>The details, so far</h2>
         <dl class="facts">
           <div>
-            <dt>Date</dt>
-            <dd><span class="stamp">TBD</span><br />Being worked on. Loudly.</dd>
+            <dt class="telemetry">Date</dt>
+            <span class="value">To be confirmed</span>
+            <dd>Being worked on. Loudly.</dd>
           </div>
           <div>
-            <dt>Place</dt>
-            <dd>
-              <span class="stamp">TBD</span><br />Somewhere we can all fit.
-            </dd>
+            <dt class="telemetry">Place</dt>
+            <span class="value">To be confirmed</span>
+            <dd>Somewhere we can all fit.</dd>
           </div>
           <div>
-            <dt>Dress code</dt>
-            <dd>
-              <span class="stamp">TBD</span><br />Not togas. We discussed it at
-              length.
-            </dd>
+            <dt class="telemetry">Dress code</dt>
+            <span class="value">To be confirmed</span>
+            <dd>Not togas. We discussed it at length.</dd>
           </div>
           <div>
-            <dt>RSVP</dt>
-            <dd>
-              <span class="stamp">Not yet</span><br />You'll hear from us. You
-              will hear from us a lot.
-            </dd>
+            <dt class="telemetry">RSVP</dt>
+            <span class="value">Not open</span>
+            <dd>You will hear from us. You will hear from us a lot.</dd>
           </div>
         </dl>
       </section>
 
-      <section>
-        <h2>The household</h2>
-        <ul class="roster">
-          <li><b>Kyle</b> <span>writes software, built this page</span></li>
-          <li><b>Elise</b> <span>reason it looks like anything at all</span></li>
-          <li><b>Leo</b> <span>cat, black, unknowable</span></li>
-          <li><b>Sierra</b> <span>dog, loud, correct about everything</span></li>
-        </ul>
+      <hr class="rule" />
 
-        <ul class="frieze">
+      <section class="bay">
+        <h2>The household</h2>
+
+        <dl class="roster">
+          <div>
+            <dt>Kyle</dt>
+            <span class="tag telemetry">Unit 01</span>
+            <dd>Writes software. Built this page.</dd>
+          </div>
+          <div>
+            <dt>Elise</dt>
+            <span class="tag telemetry">Unit 02</span>
+            <dd>Reason it looks like anything at all.</dd>
+          </div>
+          <div>
+            <dt>Leo</dt>
+            <span class="tag telemetry">Cat</span>
+            <dd>Black, silent, fundamentally unknowable.</dd>
+          </div>
+          <div>
+            <dt>Sierra</dt>
+            <span class="tag telemetry">Dog</span>
+            <dd>Loud, and correct about everything.</dd>
+          </div>
+        </dl>
+
+        <ul class="plates">
           <li>
             <figure>
               <img
@@ -423,18 +553,23 @@
                 alt="Leo the black cat walking past Sierra, who is lying on a rug"
                 loading="lazy"
               />
-              <figcaption>An unresolved dispute.</figcaption>
+              <figcaption>
+                <span class="telemetry idx">01</span>An unresolved dispute.
+              </figcaption>
             </figure>
           </li>
           <li>
             <figure>
               <img
+                class="pos-mid"
                 src="/assets/wedding/sierra-window.jpg"
-                style="object-position: center 58%"
                 alt="Sierra sitting on an ottoman looking out a Brooklyn window"
                 loading="lazy"
               />
-              <figcaption>Sierra, supervising Brooklyn.</figcaption>
+              <figcaption>
+                <span class="telemetry idx">02</span>Sierra, supervising
+                Brooklyn.
+              </figcaption>
             </figure>
           </li>
           <li>
@@ -444,19 +579,24 @@
                 alt="Sierra bounding through deep snow on a city street"
                 loading="lazy"
               />
-              <figcaption>Her preferred weather.</figcaption>
+              <figcaption>
+                <span class="telemetry idx">03</span>Her preferred weather.
+              </figcaption>
             </figure>
           </li>
         </ul>
       </section>
 
-      <section>
+      <hr class="rule" />
+
+      <section class="bay">
         <h2>Enjoy these pictures of us being cute</h2>
         <p class="prose">
           There is no "our story" section on this website. Nobody has ever
           finished reading one.
         </p>
-        <ul class="frieze">
+
+        <ul class="plates">
           <li>
             <figure>
               <img
@@ -464,7 +604,10 @@
                 alt="Kyle and Elise at sunset over the caldera in Santorini"
                 loading="lazy"
               />
-              <figcaption>Greece, which explains this website.</figcaption>
+              <figcaption>
+                <span class="telemetry idx">01</span>Greece, which explains a
+                lot about this website.
+              </figcaption>
             </figure>
           </li>
           <li>
@@ -474,7 +617,10 @@
                 alt="Kyle and Elise hugging in a mirrored bathroom, taking a mirror selfie"
                 loading="lazy"
               />
-              <figcaption>Infinite mirrors, one bathroom.</figcaption>
+              <figcaption>
+                <span class="telemetry idx">02</span>Infinite mirrors, one
+                bathroom.
+              </figcaption>
             </figure>
           </li>
           <li>
@@ -484,7 +630,9 @@
                 alt="Kyle and Elise in sunglasses on a sunny waterfront"
                 loading="lazy"
               />
-              <figcaption>A very blue day.</figcaption>
+              <figcaption>
+                <span class="telemetry idx">03</span>A very blue day.
+              </figcaption>
             </figure>
           </li>
           <li>
@@ -494,7 +642,10 @@
                 alt="Elise laughing while holding Sierra, who is yelling"
                 loading="lazy"
               />
-              <figcaption>Elise and Sierra, in agreement.</figcaption>
+              <figcaption>
+                <span class="telemetry idx">04</span>Elise and Sierra, in
+                agreement.
+              </figcaption>
             </figure>
           </li>
           <li>
@@ -504,18 +655,22 @@
                 alt="Elise laughing with her hand over her mouth"
                 loading="lazy"
               />
-              <figcaption>Elise, mid-laugh.</figcaption>
+              <figcaption>
+                <span class="telemetry idx">05</span>Elise, mid-laugh.
+              </figcaption>
             </figure>
           </li>
           <li>
             <figure>
               <img
+                class="pos-low"
                 src="/assets/wedding/masks.jpg"
-                style="object-position: center bottom"
                 alt="Kyle and Elise lying down in face masks, being goofy"
                 loading="lazy"
               />
-              <figcaption>A normal Tuesday.</figcaption>
+              <figcaption>
+                <span class="telemetry idx">06</span>A normal Tuesday.
+              </figcaption>
             </figure>
           </li>
         </ul>
@@ -524,13 +679,17 @@
 
     <div class="band" role="presentation"></div>
 
-    <footer class="wrap">
-      <span class="shout">Questions</span>
-      <p>
+    <footer>
+      <h2>Questions</h2>
+      <p class="prose">
         Text us. If you don't have our numbers, that is itself an answer, but
-        find Kyle on the internet and we'll sort it out.
+        find Kyle on the internet and we will sort it out.
       </p>
-      <a class="homelink" href="/">kyleholzinger.dev</a>
+      <div class="signoff telemetry">
+        <a href="/">kyleholzinger.dev</a>
+        <span>Rev 03</span>
+        <span class="red">Updated Sept 2026</span>
+      </div>
     </footer>
   </body>
 </html>
