@@ -151,6 +151,45 @@
         color: var(--red);
       }
 
+      /* the drawer: a second header that slides down from the top edge once the
+         hero is fully out of view. visibility keeps it off the tab order while
+         closed, and is delayed so the retract still animates. */
+      .drawer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 9;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 28px;
+        padding: 12px var(--gutter);
+        background: var(--paper);
+        border-bottom: 2px solid var(--ink);
+        transform: translateY(-100%);
+        visibility: hidden;
+        transition: transform 0.28s ease, visibility 0s linear 0.28s;
+      }
+
+      .drawer.is-open {
+        transform: translateY(0);
+        visibility: visible;
+        transition: transform 0.28s ease, visibility 0s;
+      }
+
+      .drawer .red {
+        color: var(--red);
+      }
+
+      .drawer .top-link {
+        margin-left: auto;
+      }
+
+      /* keep anchored content clear of the drawer */
+      #invitation {
+        scroll-margin-top: 76px;
+      }
+
       .bay {
         padding-inline: var(--gutter);
       }
@@ -285,6 +324,17 @@
         font-size: clamp(1.6rem, 4vw, 2.1rem);
         line-height: 1;
         margin: 14px 0 10px;
+      }
+
+      .facts address {
+        font-style: normal;
+      }
+
+      .maplink {
+        display: inline-block;
+        margin-top: 10px;
+        color: var(--red);
+        text-underline-offset: 3px;
       }
 
       /* pin descriptions to the cell floor so they share a baseline even when
@@ -445,6 +495,11 @@
           scroll-behavior: auto;
         }
 
+        .drawer,
+        .drawer.is-open {
+          transition: none;
+        }
+
         * {
           animation: none !important;
           transition: none !important;
@@ -454,7 +509,13 @@
   </head>
 
   <body>
-    <div class="entry">
+    <div class="drawer telemetry" id="drawer">
+      <span>Kyle &amp; Elise&nbsp;&reg;</span>
+      <span class="red">Friday, July 9, 2027</span>
+      <a class="top-link" href="#top">[ Top ]</a>
+    </div>
+
+    <div class="entry" id="top">
       <div class="strip telemetry">
         <span>Kyle &amp; Elise&nbsp;&reg;</span>
         <span>Brooklyn, NY</span>
@@ -512,7 +573,17 @@
           <div>
             <dt class="telemetry">Place</dt>
             <span class="value">Rule of Thirds</span>
-            <dd>Greenpoint, Brooklyn.</dd>
+            <dd>
+              <address>
+                171 Banker St<br />
+                Brooklyn, NY 11222
+              </address>
+              <a
+                class="telemetry maplink"
+                href="https://maps.apple.com/?q=Rule%20of%20Thirds&amp;address=171%20Banker%20St,%20Brooklyn,%20NY%2011222"
+                >[ Open in Maps ]</a
+              >
+            </dd>
           </div>
           <div>
             <dt class="telemetry">Dress code</dt>
@@ -523,6 +594,136 @@
             <dt class="telemetry">RSVP</dt>
             <span class="value">Not open</span>
             <dd>You will hear from us. You will hear from us a lot.</dd>
+          </div>
+        </dl>
+      </section>
+
+      <hr class="rule" />
+
+      <section class="bay">
+        <h2>The next day</h2>
+        <p class="prose">
+          We are doing a picnic in the park on the Saturday. No structure, no
+          speeches, no obligation — come if you are still in town and feel like
+          sitting on some grass.
+        </p>
+
+        <dl class="facts">
+          <div>
+            <dt class="telemetry">Date</dt>
+            <span class="value"
+              ><time datetime="2027-07-10">July 10, 2027</time></span
+            >
+            <dd>The Saturday. Recover first.</dd>
+          </div>
+          <div>
+            <dt class="telemetry">Time</dt>
+            <span class="value"><time datetime="14:00">2:00 PM</time></span>
+            <dd>Loosely. It is a picnic.</dd>
+          </div>
+          <div>
+            <dt class="telemetry">Place</dt>
+            <span class="value">McCarren Park</span>
+            <dd>
+              <address>
+                776 Lorimer St<br />
+                Brooklyn, NY
+              </address>
+              <a
+                class="telemetry maplink"
+                href="https://maps.apple.com/?q=McCarren%20Park&amp;address=776%20Lorimer%20St,%20Brooklyn,%20NY"
+                >[ Open in Maps ]</a
+              >
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <hr class="rule" />
+
+      <section class="bay">
+        <h2>Getting there</h2>
+        <p class="prose">
+          Greenpoint is the top of Brooklyn, across the river from midtown. It
+          is easier to reach than people expect and harder to leave than people
+          plan for.
+        </p>
+
+        <dl class="facts">
+          <div>
+            <dt class="telemetry">Subway</dt>
+            <span class="value">G to Nassau Av</span>
+            <dd>
+              Greenpoint Av works too. From Manhattan, take the L to Bedford Av
+              and walk up through the park.
+            </dd>
+          </div>
+          <div>
+            <dt class="telemetry">Flying</dt>
+            <span class="value">LaGuardia</span>
+            <dd>
+              Closest by a wide margin. JFK and Newark both work and both cost
+              you an hour.
+            </dd>
+          </div>
+          <div>
+            <dt class="telemetry">Driving</dt>
+            <span class="value">Do not</span>
+            <dd>
+              Street parking in Greenpoint on a Friday night is a character
+              test. Take a car service.
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <hr class="rule" />
+
+      <section class="bay">
+        <h2>Where to stay</h2>
+        <p class="prose">
+          Everything below is in Greenpoint or Williamsburg, walking distance to
+          both the dinner and the park. Book early — July is peak Brooklyn.
+        </p>
+
+        <dl class="facts">
+          <div>
+            <dt class="telemetry">Option 01</dt>
+            <span class="value">The William Vale</span>
+            <dd>
+              Williamsburg waterfront, rooftop pool, the view everyone
+              photographs.
+              <a
+                class="telemetry maplink"
+                href="https://maps.apple.com/?q=The%20William%20Vale%2C%20Brooklyn"
+                >[ Open in Maps ]</a
+              >
+            </dd>
+          </div>
+          <div>
+            <dt class="telemetry">Option 02</dt>
+            <span class="value">CODA Williamsburg</span>
+            <dd>
+              Right on McCarren Park, which makes the Saturday picnic a very
+              short walk.
+              <a
+                class="telemetry maplink"
+                href="https://maps.apple.com/?q=CODA%20Williamsburg%2C%20Brooklyn"
+                >[ Open in Maps ]</a
+              >
+            </dd>
+          </div>
+          <div>
+            <dt class="telemetry">Option 03</dt>
+            <span class="value">The Hoxton</span>
+            <dd>
+              Williamsburg, by the Brooklyn Brewery. Good lobby to wait in.
+              <a
+                class="telemetry maplink"
+                href="https://maps.apple.com/?q=The%20Hoxton%20Williamsburg%2C%20Brooklyn"
+                >[ Open in Maps ]</a
+              >
+            </dd>
           </div>
         </dl>
       </section>
@@ -701,5 +902,19 @@
         <span class="red">Updated Sept 2026</span>
       </div>
     </footer>
+    <script>
+      // Reveal the drawer only once the hero has left the viewport entirely.
+      // IntersectionObserver rather than a scroll listener so this costs
+      // nothing per frame. No JS means no drawer, which the page survives.
+      const drawer = document.getElementById("drawer");
+      const hero = document.getElementById("top");
+
+      if (drawer && hero && "IntersectionObserver" in window) {
+        new IntersectionObserver(
+          ([entry]) => drawer.classList.toggle("is-open", !entry.isIntersecting),
+          { threshold: 0 }
+        ).observe(hero);
+      }
+    </script>
   </body>
 </html>
