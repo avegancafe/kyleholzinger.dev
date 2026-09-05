@@ -1,33 +1,33 @@
-<html !DOCTYPE lang="en-us">
+<!DOCTYPE html>
+<html lang="en-us">
   <head>
     <title>Kyle &amp; Elise</title>
-    <meta name="HandheldFriendly" content="true" />
-    <meta name="MobileOptimized" content="320" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="Kyle Holzinger" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:creator" content="@kyleholzinger" />
-    <meta name="twitter:description" content="kyle &amp; elise are getting married" />
+    <meta name="twitter:title" content="Kyle &amp; Elise" />
+    <meta
+      name="twitter:description"
+      content="Kyle and Elise are getting married. Details forthcoming."
+    />
     <meta
       name="twitter:image"
-      content="https://kyleholzinger.dev/assets/wedding/santorini.jpg"
+      content="https://kyleholzinger.dev/assets/wedding/hello-there.jpg"
     />
-    <meta name="twitter:title" content="Kyle &amp; Elise" />
-
-    <meta property="og:site_name" content="UNTITLED" />
-    <meta property="og:description" content="kyle &amp; elise are getting married" />
-    <meta name="og:url" content="https://kyleholzinger.dev/wedding/" />
-    <meta name="og:title" content="Kyle &amp; Elise" />
+    <meta property="og:site_name" content="Kyle &amp; Elise" />
+    <meta property="og:title" content="Kyle &amp; Elise" />
     <meta
-      name="og:image"
-      content="https://kyleholzinger.dev/assets/wedding/santorini.jpg"
+      property="og:description"
+      content="Kyle and Elise are getting married. Details forthcoming."
     />
-
+    <meta property="og:url" content="https://kyleholzinger.dev/wedding/" />
     <meta
-      name="viewport"
-      content="initial-scale=1.0, maximum-scale=5.0, width=device-width"
+      property="og:image"
+      content="https://kyleholzinger.dev/assets/wedding/hello-there.jpg"
     />
-    <meta charset="UTF-8" />
-    <meta name="author" content="Kyle Holzinger" />
 
     <script
       data-host="https://microanalytics.io"
@@ -37,287 +37,500 @@
       async
       defer
     ></script>
-    <link rel="stylesheet" href="/index.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,400;0,500;0,700;1,400&family=Syne:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+
     <style>
-      .splash {
-        display: block;
-        position: relative;
-        height: 100vh;
-        height: 100svh;
-        margin: 0 0 24px;
-        text-decoration: none;
-        overflow: hidden;
+      :root {
+        --marble: #dfe6e3;
+        --plaster: #f6f2ec;
+        --slip: #241c19;
+        --oxide: #c0492b;
+        --ochre: #e0a32e;
+        --aegean: #1b5e7e;
+
+        --meander: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='%23C0492B' stroke-width='3'%3E%3Cpath d='M0 21 H24'/%3E%3Cpath d='M21 21 V3 H6 V15 H15 V9 H10.5'/%3E%3C/g%3E%3C/svg%3E");
       }
 
-      .splash img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-        filter: grayscale(1) sepia(1) hue-rotate(60deg) saturate(1.8)
-          brightness(0.75);
-        transition: filter 0.6s;
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
       }
 
-      .splash:hover img,
-      .splash:focus img {
-        filter: none;
+      body {
+        margin: 0;
+        background: var(--marble);
+        color: var(--slip);
+        font-family: Karla, system-ui, sans-serif;
+        font-size: 17px;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
       }
 
-      .splash-caption {
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 12%;
-        text-align: center;
-        font-size: clamp(1.6rem, 6vw, 3rem);
-        text-shadow: 0 0 12px black, 0 0 4px black;
-      }
-
-      .splash-hint {
-        display: block;
-        font-size: 1rem;
-        opacity: 0.8;
-        margin-top: 8px;
-      }
-
-      .gallery {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 12px;
-        padding: 0;
-        list-style-type: none;
-      }
-
-      .gallery img {
-        width: 100%;
-        aspect-ratio: 3 / 4;
-        object-fit: cover;
-        display: block;
-        border: 1px solid var(--green);
-        filter: grayscale(1) sepia(1) hue-rotate(60deg) saturate(2.2)
-          brightness(0.85);
-        transition: filter 0.4s;
-      }
-
-      .gallery img:hover,
-      .gallery img:focus {
-        filter: none;
-      }
-
-      .gallery figcaption {
-        margin-top: 4px;
-      }
-
-      .gallery figure {
+      h1,
+      h2,
+      .shout {
+        font-family: Syne, system-ui, sans-serif;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1.02;
         margin: 0;
       }
 
-      dt {
-        font-weight: bold;
+      a {
+        color: var(--aegean);
       }
 
-      dd {
-        margin: 0 0 16px 0;
+      a:focus-visible,
+      .arch:focus-visible {
+        outline: 3px solid var(--aegean);
+        outline-offset: 4px;
       }
 
-      .tbd {
-        opacity: 0.7;
+      .wrap {
+        max-width: 62rem;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      .prose {
+        max-width: 34rem;
+      }
+
+      /* ---------- doorway ---------- */
+
+      .doorway {
+        min-height: 100vh;
+        min-height: 100svh;
+        display: grid;
+        grid-template-rows: 1fr auto;
+        justify-items: center;
+        padding: 32px 24px 0;
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .arch {
+        align-self: center;
+        width: min(54vh, 84vw);
+        aspect-ratio: 3 / 4;
+        border-radius: 9999px 9999px 0 0;
+        overflow: hidden;
+        background: var(--oxide);
+        box-shadow: 0 0 0 6px var(--oxide);
+        position: relative;
+      }
+
+      .arch img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 72%;
+        display: block;
+      }
+
+      .doorway-words {
+        text-align: center;
+        padding: 28px 0 40px;
+      }
+
+      .doorway-words .shout {
+        font-size: clamp(2.4rem, 9vw, 4.6rem);
+        color: var(--oxide);
+        text-transform: lowercase;
+      }
+
+      .doorway-words p {
+        margin: 10px 0 0;
+        font-size: 1.05rem;
+        text-decoration: underline;
+        text-decoration-color: var(--ochre);
+        text-decoration-thickness: 3px;
+        text-underline-offset: 6px;
+      }
+
+      .band {
+        height: 48px;
+        background-image: var(--meander);
+        background-repeat: repeat-x;
+        background-position: center bottom;
+      }
+
+      /* ---------- masthead ---------- */
+
+      .masthead {
+        padding: 80px 0 8px;
+      }
+
+      .masthead h1 {
+        font-size: clamp(3rem, 13vw, 8.5rem);
+        text-transform: uppercase;
+      }
+
+      .masthead h1 .amp {
+        color: var(--oxide);
+        margin-right: 0.14em;
+      }
+
+      .lede {
+        font-size: 1.35rem;
+        margin: 24px 0 0;
+        max-width: 30rem;
+      }
+
+      section {
+        padding: 56px 0;
+      }
+
+      section h2 {
+        font-size: clamp(1.7rem, 4.5vw, 2.6rem);
+        margin-bottom: 28px;
+      }
+
+      /* ---------- details ---------- */
+
+      .facts {
+        margin: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 2px;
+        background: var(--slip);
+        border: 2px solid var(--slip);
+      }
+
+      .facts > div {
+        background: var(--plaster);
+        padding: 22px 24px 26px;
+      }
+
+      .facts dt {
+        font-family: Syne, sans-serif;
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--aegean);
+      }
+
+      .facts dd {
+        margin: 4px 0 0;
+      }
+
+      .stamp {
+        display: inline-block;
+        font-family: Syne, sans-serif;
+        font-weight: 800;
+        font-size: 2rem;
+        color: var(--oxide);
+        line-height: 1;
+        margin-bottom: 6px;
+      }
+
+      /* ---------- pictures ---------- */
+
+      .frieze {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 28px 24px;
+      }
+
+      .frieze li {
+        display: flex;
+      }
+
+      .frieze figure {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .frieze img {
+        width: 100%;
+        display: block;
+        aspect-ratio: 3 / 4;
+        object-fit: cover;
+        background: var(--plaster);
+      }
+
+      .frieze figcaption {
+        margin-top: auto;
+        padding-top: 10px;
+        font-size: 0.95rem;
+      }
+
+      .frieze li:nth-child(3n + 1) img {
+        border-radius: 9999px 9999px 0 0;
+        box-shadow: 0 0 0 3px var(--oxide);
+      }
+
+      .frieze li:nth-child(3n + 2) img {
+        aspect-ratio: 1;
+        border-radius: 50%;
+        box-shadow: 0 0 0 3px var(--ochre);
+      }
+
+      .frieze li:nth-child(3n + 3) img {
+        box-shadow: 0 0 0 3px var(--aegean);
+      }
+
+      /* ---------- household ---------- */
+
+      .roster {
+        list-style: none;
+        margin: 0 0 40px;
+        padding: 0;
+        max-width: 34rem;
+      }
+
+      .roster li {
+        display: flex;
+        gap: 14px;
+        padding: 12px 0;
+        border-bottom: 2px solid var(--marble);
+        border-bottom-color: rgba(36, 28, 25, 0.15);
+      }
+
+      .roster b {
+        font-family: Syne, sans-serif;
+        font-weight: 700;
+        min-width: 6.5rem;
+      }
+
+      /* ---------- footer ---------- */
+
+      footer {
+        padding: 64px 0 80px;
+        text-align: center;
+      }
+
+      footer .shout {
+        font-size: 1.6rem;
+        color: var(--oxide);
+      }
+
+      footer p {
+        max-width: 30rem;
+        margin: 12px auto 0;
+      }
+
+      .homelink {
+        display: inline-block;
+        margin-top: 28px;
+        font-size: 0.9rem;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation: none !important;
+          transition: none !important;
+        }
       }
     </style>
   </head>
-  <body class="crt">
-    <a class="splash" href="#info">
-      <img
-        src="/assets/wedding/hello-there.jpg"
-        alt="Kyle and Elise very close to the camera in sunglasses under a tin ceiling"
-      />
-      <span class="splash-caption"
-        >oh hello there<span class="splash-hint">(click to come in)</span></span
-      >
+
+  <body>
+    <a class="doorway" href="#invitation">
+      <div class="arch">
+        <img
+          src="/assets/wedding/hello-there.jpg"
+          alt="Kyle and Elise leaning into the camera in sunglasses under a pressed-tin ceiling"
+        />
+      </div>
+      <div class="doorway-words">
+        <span class="shout">oh hello there</span>
+        <p>come in</p>
+      </div>
     </a>
 
-    <nav id="info">
-      <ul>
-        <li><a href="/">home</a></li>
-        <li><a href="/blog/">blog</a></li>
-        <li><a href="https://github.com/avegancafe">github</a></li>
-        <li>
-          <a href="https://www.instagram.com/kyleholzinger/">ig</a>
-        </li>
-        <li><a href="https://twitter.com/kyleholzinger">twitter</a></li>
-      </ul>
-    </nav>
+    <div class="band" role="presentation"></div>
 
-    <div id="content">
-      <h2><a href="/">UNTITLED</a></h2>
-      <h1>KYLE &amp; ELISE</h1>
+    <main class="wrap" id="invitation">
+      <header class="masthead">
+        <h1>Kyle<br /><span class="amp">&amp;</span>Elise</h1>
+        <p class="lede">
+          are getting married. We have known this for a while and have told
+          almost no one, so congratulations on being early.
+        </p>
+      </header>
 
-      <p>&gt; we're getting married.</p>
+      <section>
+        <h2>Where things stand</h2>
+        <div class="prose">
+          <p>
+            Four years in, still enthusiastic about each other, which everyone
+            says is the entire trick. We live in Brooklyn with a cat and a dog
+            who have never once agreed on anything.
+          </p>
+          <p>
+            This page is where the details go as we pin them down. Nothing here
+            is a hint. There is genuinely nothing to read into yet.
+          </p>
+        </div>
+      </section>
 
-      <hr />
+      <section>
+        <h2>The details, so far</h2>
+        <dl class="facts">
+          <div>
+            <dt>Date</dt>
+            <dd><span class="stamp">TBD</span><br />Being worked on. Loudly.</dd>
+          </div>
+          <div>
+            <dt>Place</dt>
+            <dd>
+              <span class="stamp">TBD</span><br />Somewhere we can all fit.
+            </dd>
+          </div>
+          <div>
+            <dt>Dress code</dt>
+            <dd>
+              <span class="stamp">TBD</span><br />Not togas. We discussed it at
+              length.
+            </dd>
+          </div>
+          <div>
+            <dt>RSVP</dt>
+            <dd>
+              <span class="stamp">Not yet</span><br />You'll hear from us. You
+              will hear from us a lot.
+            </dd>
+          </div>
+        </dl>
+      </section>
 
-      <h2>the short version</h2>
+      <section>
+        <h2>The household</h2>
+        <ul class="roster">
+          <li><b>Kyle</b> <span>writes software, built this page</span></li>
+          <li><b>Elise</b> <span>reason it looks like anything at all</span></li>
+          <li><b>Leo</b> <span>cat, black, unknowable</span></li>
+          <li><b>Sierra</b> <span>dog, loud, correct about everything</span></li>
+        </ul>
 
+        <ul class="frieze">
+          <li>
+            <figure>
+              <img
+                src="/assets/wedding/leo-sierra.jpg"
+                alt="Leo the black cat walking past Sierra, who is lying on a rug"
+                loading="lazy"
+              />
+              <figcaption>An unresolved dispute.</figcaption>
+            </figure>
+          </li>
+          <li>
+            <figure>
+              <img
+                src="/assets/wedding/sierra-window.jpg"
+                style="object-position: center 58%"
+                alt="Sierra sitting on an ottoman looking out a Brooklyn window"
+                loading="lazy"
+              />
+              <figcaption>Sierra, supervising Brooklyn.</figcaption>
+            </figure>
+          </li>
+          <li>
+            <figure>
+              <img
+                src="/assets/wedding/sierra-snow.jpg"
+                alt="Sierra bounding through deep snow on a city street"
+                loading="lazy"
+              />
+              <figcaption>Her preferred weather.</figcaption>
+            </figure>
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Enjoy these pictures of us being cute</h2>
+        <p class="prose">
+          There is no "our story" section on this website. Nobody has ever
+          finished reading one.
+        </p>
+        <ul class="frieze">
+          <li>
+            <figure>
+              <img
+                src="/assets/wedding/santorini.jpg"
+                alt="Kyle and Elise at sunset over the caldera in Santorini"
+                loading="lazy"
+              />
+              <figcaption>Greece, which explains this website.</figcaption>
+            </figure>
+          </li>
+          <li>
+            <figure>
+              <img
+                src="/assets/wedding/mirror.jpg"
+                alt="Kyle and Elise hugging in a mirrored bathroom, taking a mirror selfie"
+                loading="lazy"
+              />
+              <figcaption>Infinite mirrors, one bathroom.</figcaption>
+            </figure>
+          </li>
+          <li>
+            <figure>
+              <img
+                src="/assets/wedding/waterfront.jpg"
+                alt="Kyle and Elise in sunglasses on a sunny waterfront"
+                loading="lazy"
+              />
+              <figcaption>A very blue day.</figcaption>
+            </figure>
+          </li>
+          <li>
+            <figure>
+              <img
+                src="/assets/wedding/elise-sierra.jpg"
+                alt="Elise laughing while holding Sierra, who is yelling"
+                loading="lazy"
+              />
+              <figcaption>Elise and Sierra, in agreement.</figcaption>
+            </figure>
+          </li>
+          <li>
+            <figure>
+              <img
+                src="/assets/wedding/elise.jpg"
+                alt="Elise laughing with her hand over her mouth"
+                loading="lazy"
+              />
+              <figcaption>Elise, mid-laugh.</figcaption>
+            </figure>
+          </li>
+          <li>
+            <figure>
+              <img
+                src="/assets/wedding/masks.jpg"
+                style="object-position: center bottom"
+                alt="Kyle and Elise lying down in face masks, being goofy"
+                loading="lazy"
+              />
+              <figcaption>A normal Tuesday.</figcaption>
+            </figure>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <div class="band" role="presentation"></div>
+
+    <footer class="wrap">
+      <span class="shout">Questions</span>
       <p>
-        Four years in and we still like each other, which everyone tells us is
-        the whole trick. We live in Brooklyn with a cat named Leo and a dog
-        named Sierra, both of whom are, in their own ways, the reason we can't
-        have nice things.
+        Text us. If you don't have our numbers, that is itself an answer, but
+        find Kyle on the internet and we'll sort it out.
       </p>
-
-      <p>
-        There is no "our story" section on this website. Instead, scroll down and
-        enjoy some pictures of us being cute.
-      </p>
-
-      <p>
-        This page is where the details will live as we figure them out. Bookmark
-        it, or don't — we'll text you either way.
-      </p>
-
-      <hr />
-
-      <h2>the details</h2>
-
-      <dl>
-        <dt>date</dt>
-        <dd class="tbd">TBD — we're working on it</dd>
-
-        <dt>venue</dt>
-        <dd class="tbd">TBD</dd>
-
-        <dt>dress code</dt>
-        <dd class="tbd">TBD</dd>
-
-        <dt>rsvp</dt>
-        <dd class="tbd">not open yet</dd>
-      </dl>
-
-      <hr />
-
-      <h2>the household</h2>
-
-      <ul>
-        <li><strong>Kyle</strong> — writes software, made this website</li>
-        <li><strong>Elise</strong> — the reason it looks like anything at all</li>
-        <li><strong>Leo</strong> — cat. Chaotic neutral.</li>
-        <li><strong>Sierra</strong> — dog. Chaotic good.</li>
-      </ul>
-
-      <ul class="gallery">
-        <li>
-          <figure>
-            <img
-              src="/assets/wedding/leo-sierra.jpg"
-              alt="Leo the black cat walking past Sierra, who is lying on a rug"
-              loading="lazy"
-            />
-            <figcaption>the standoff, ongoing</figcaption>
-          </figure>
-        </li>
-        <li>
-          <figure>
-            <img
-              src="/assets/wedding/sierra-window.jpg"
-              alt="Sierra sitting on an ottoman looking out a Brooklyn window"
-              loading="lazy"
-            />
-            <figcaption>sierra, supervising brooklyn</figcaption>
-          </figure>
-        </li>
-        <li>
-          <figure>
-            <img
-              src="/assets/wedding/sierra-snow.jpg"
-              alt="Sierra bounding through deep snow on a city street"
-              loading="lazy"
-            />
-            <figcaption>her favorite weather</figcaption>
-          </figure>
-        </li>
-        <li>
-          <figure>
-            <img
-              src="/assets/wedding/elise-sierra.jpg"
-              alt="Elise laughing while holding Sierra, who is yelling"
-              loading="lazy"
-            />
-            <figcaption>elise and sierra, in agreement</figcaption>
-          </figure>
-        </li>
-      </ul>
-
-      <hr />
-
-      <h2>enjoy these pictures of us being cute</h2>
-
-      <ul class="gallery">
-        <li>
-          <figure>
-            <img
-              src="/assets/wedding/santorini.jpg"
-              alt="Kyle and Elise at sunset over the caldera in Santorini"
-              loading="lazy"
-            />
-            <figcaption>santorini, at golden hour</figcaption>
-          </figure>
-        </li>
-        <li>
-          <figure>
-            <img
-              src="/assets/wedding/mirror.jpg"
-              alt="Kyle and Elise hugging in a mirrored bathroom, taking a mirror selfie"
-              loading="lazy"
-            />
-            <figcaption>infinite mirrors, one bathroom</figcaption>
-          </figure>
-        </li>
-        <li>
-          <figure>
-            <img
-              src="/assets/wedding/waterfront.jpg"
-              alt="Kyle and Elise in sunglasses on a sunny waterfront"
-              loading="lazy"
-            />
-            <figcaption>a very blue day by the water</figcaption>
-          </figure>
-        </li>
-        <li>
-          <figure>
-            <img
-              src="/assets/wedding/elise.jpg"
-              alt="Elise laughing with her hand over her mouth"
-              loading="lazy"
-            />
-            <figcaption>elise, mid-laugh</figcaption>
-          </figure>
-        </li>
-        <li>
-          <figure>
-            <img
-              src="/assets/wedding/masks.jpg"
-              alt="Kyle and Elise lying down in face masks, being goofy"
-              loading="lazy"
-            />
-            <figcaption>a normal tuesday</figcaption>
-          </figure>
-        </li>
-      </ul>
-
-      <hr />
-
-      <h2>questions</h2>
-
-      <p>
-        Text us. If you don't have our numbers, reach out on any of the socials
-        linked up top and we'll sort you out.
-      </p>
-
-      <p>&lt;3<br />Kyle &amp; Elise</p>
-    </div>
-    <a href="#" class="stabilizer">stabilize</a>
-    <a href="#" class="stabilizer stabilizer--mobile">stabilize</a>
-    <script src="/index.js"></script>
+      <a class="homelink" href="/">kyleholzinger.dev</a>
+    </footer>
   </body>
 </html>
