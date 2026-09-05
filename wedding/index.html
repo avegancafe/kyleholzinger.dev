@@ -212,51 +212,6 @@
         opacity: 0.5;
       }
 
-      /* Touch has no hover, so the row gets one staggered nudge when it first
-         scrolls into view. It fires on the tabs you can actually go to, not
-         the one you're already on. */
-      @keyframes tab-nudge {
-        0%,
-        100% {
-          background: var(--substrate);
-        }
-        35% {
-          background: var(--paper);
-        }
-      }
-
-      @keyframes index-nudge {
-        0%,
-        100% {
-          transform: none;
-        }
-        35% {
-          transform: scale(1.5) translateY(-1px);
-        }
-      }
-
-      .tabs.is-nudging .tab:not([aria-selected="true"]) {
-        animation: tab-nudge 640ms ease both;
-      }
-
-      .tabs.is-nudging .tab:not([aria-selected="true"]) .tab-index {
-        animation: index-nudge 640ms ease both;
-      }
-
-      .tabs.is-nudging .tab:nth-child(2),
-      .tabs.is-nudging .tab:nth-child(2) .tab-index {
-        animation-delay: 90ms;
-      }
-
-      .tabs.is-nudging .tab:nth-child(3),
-      .tabs.is-nudging .tab:nth-child(3) .tab-index {
-        animation-delay: 180ms;
-      }
-
-      .tabs.is-nudging .tab:nth-child(4),
-      .tabs.is-nudging .tab:nth-child(4) .tab-index {
-        animation-delay: 270ms;
-      }
 
       .tab:last-child {
         border-right: 0;
@@ -1186,42 +1141,6 @@
         );
 
         select(location.hash.slice(1));
-
-        // Nudge the tabs the first time the bar is seen, and once more if the
-        // page has sat untouched. Two nudges, then it stops for good — a
-        // permanent blinker on a page people read is just noise.
-        const strip = document.querySelector('[role="tablist"]');
-        const calm = matchMedia("(prefers-reduced-motion: reduce)");
-        let nudgesLeft = 2;
-        let timer;
-
-        function nudge() {
-          if (nudgesLeft <= 0 || calm.matches) return;
-          nudgesLeft--;
-          strip.classList.remove("is-nudging");
-          void strip.offsetWidth; // restart the animation
-          strip.classList.add("is-nudging");
-          clearTimeout(timer);
-          if (nudgesLeft > 0) timer = setTimeout(nudge, 10000);
-        }
-
-        // any real interaction means they've understood; stop nudging
-        tabs.forEach((tab) =>
-          tab.addEventListener("click", () => {
-            nudgesLeft = 0;
-            clearTimeout(timer);
-            strip.classList.remove("is-nudging");
-          })
-        );
-
-        new IntersectionObserver(
-          (entries, observer) => {
-            if (!entries[0].isIntersecting) return;
-            observer.disconnect();
-            nudge();
-          },
-          { threshold: 0.6 }
-        ).observe(strip);
       })();
     </script>
   </body>
