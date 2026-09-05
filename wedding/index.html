@@ -351,6 +351,22 @@
         font-style: normal;
       }
 
+      .notice {
+        display: flex;
+        gap: 16px;
+        align-items: baseline;
+        max-width: 60ch;
+        margin: 0 0 8px;
+        padding: 14px 18px;
+        border: 2px solid var(--ink);
+        background: var(--substrate);
+      }
+
+      .notice .telemetry {
+        flex: none;
+        color: var(--red);
+      }
+
       .maplink {
         display: inline-block;
         margin-top: 10px;
@@ -798,7 +814,15 @@
         <h2>Where to stay</h2>
         <p class="prose">
           Everything below is in Greenpoint or Williamsburg, walking distance to
-          both the dinner and the park. Book early — July is peak Brooklyn.
+          both the dinner and the park.
+        </p>
+
+        <p class="notice">
+          <span class="telemetry">Note</span>
+          <span
+            >We are working on a hotel block and will post it here well before
+            you need to book anything.</span
+          >
         </p>
 
         <dl class="facts">
