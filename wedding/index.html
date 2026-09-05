@@ -89,8 +89,7 @@
         inset: 0;
         z-index: 10;
         pointer-events: none;
-        opacity: 0.05;
-        mix-blend-mode: multiply;
+        opacity: 0.035;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
       }
 
@@ -158,10 +157,17 @@
 
       /* ---------- doorway ---------- */
 
+      .entry {
+        display: flex;
+        flex-direction: column;
+        min-height: 100svh;
+      }
+
       .doorway {
         display: grid;
         grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
-        min-height: calc(100dvh - 46px);
+        flex: 1 1 auto;
+        min-height: 0;
         text-decoration: none;
         border-bottom: 2px solid var(--ink);
       }
@@ -424,7 +430,7 @@
         }
 
         .doorway-plate {
-          min-height: 54dvh;
+          min-height: 54svh;
           border-right: 0;
           border-bottom: 2px solid var(--ink);
         }
@@ -448,25 +454,27 @@
   </head>
 
   <body>
-    <div class="strip telemetry">
-      <span>Kyle &amp; Elise&nbsp;&reg;</span>
-      <span>Brooklyn, NY</span>
-      <span>Together since 2021</span>
-      <span class="red">Status // engaged</span>
-    </div>
+    <div class="entry">
+      <div class="strip telemetry">
+        <span>Kyle &amp; Elise&nbsp;&reg;</span>
+        <span>Brooklyn, NY</span>
+        <span>Together since 2021</span>
+        <span class="red">Status // engaged</span>
+      </div>
 
-    <a class="doorway" href="#invitation">
-      <div class="doorway-plate">
-        <img
-          src="/assets/wedding/hello-there.jpg"
-          alt="Kyle and Elise leaning close to the camera in sunglasses under a pressed-tin ceiling"
-        />
-      </div>
-      <div class="doorway-hail">
-        <p class="macro">Oh hello <em>there</em></p>
-        <span class="enter telemetry">[ Enter ]</span>
-      </div>
-    </a>
+      <a class="doorway" href="#invitation">
+        <div class="doorway-plate">
+          <img
+            src="/assets/wedding/hello-there.jpg"
+            alt="Kyle and Elise leaning close to the camera in sunglasses under a pressed-tin ceiling"
+          />
+        </div>
+        <div class="doorway-hail">
+          <p class="macro">Oh hello <em>there</em></p>
+          <span class="enter telemetry">[ Enter ]</span>
+        </div>
+      </a>
+    </div>
 
     <main id="invitation">
       <header class="masthead">
