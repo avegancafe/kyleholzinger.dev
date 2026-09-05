@@ -433,8 +433,6 @@
         display: block;
         aspect-ratio: 4 / 5;
         object-fit: cover;
-        background: var(--cyan-wash);
-        filter: url(#cyanotype);
       }
 
       /* Slot for the scanned cyanotype once it exists. Drop the scan at
@@ -559,16 +557,6 @@
   </head>
 
   <body>
-    <svg width="0" height="0" aria-hidden="true" focusable="false">
-      <filter id="cyanotype" color-interpolation-filters="sRGB">
-        <feColorMatrix type="saturate" values="0" />
-        <feComponentTransfer>
-          <feFuncR type="table" tableValues="0.05 0.86" />
-          <feFuncG type="table" tableValues="0.17 0.90" />
-          <feFuncB type="table" tableValues="0.32 0.96" />
-        </feComponentTransfer>
-      </filter>
-    </svg>
 
     <div class="entry" id="top">
       <div class="strip telemetry">
