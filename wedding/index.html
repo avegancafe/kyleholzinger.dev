@@ -271,54 +271,50 @@
         outline-offset: 2px;
       }
 
-      .egg {
-        position: fixed;
-        inset: 0;
-        z-index: 50;
-        display: grid;
-        place-items: center;
-        background: var(--paper);
-        border: 0;
-        cursor: pointer;
+      .mark-glyph {
+        display: inline-block;
       }
 
-      .egg[hidden] {
+      .mark-anim {
         display: none;
       }
 
-      .egg-stack {
-        width: min(68vmin, 460px);
-        aspect-ratio: 1;
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16.5%;
-        padding: 8.2%;
-        animation: egg-spin 5s 0.1s infinite cubic-bezier(1, 0.015, 0.295, 1.225);
+      .mark.is-live .mark-glyph {
+        display: none;
       }
 
-      .egg-stack span {
-        aspect-ratio: 1;
+      /* sits on the text line in place of the glyph, optically centred rather
+         than baseline-aligned */
+      .mark.is-live .mark-anim {
+        display: inline-grid;
+        vertical-align: middle;
+        /* transform is spoken for by egg-spin, so nudge with position */
+        position: relative;
+        top: -1px;
+        width: 1.4em;
+        height: 1.4em;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12%;
+        animation: egg-spin 5s 0.1s infinite
+          cubic-bezier(1, 0.015, 0.295, 1.225);
+      }
+
+      .mark-anim i {
         background: var(--cyan-wash);
         animation: egg-morph 5s 0.1s infinite
           cubic-bezier(1, 0.015, 0.295, 1.225);
       }
 
-      .egg-stack span:nth-child(2) {
+      .mark-anim i:nth-child(2) {
         animation-delay: -0.2s;
       }
 
-      .egg-stack span:nth-child(3) {
+      .mark-anim i:nth-child(3) {
         animation-delay: -0.4s;
       }
 
-      .egg-stack span:nth-child(4) {
+      .mark-anim i:nth-child(4) {
         animation-delay: -0.6s;
-      }
-
-      .egg-hint {
-        position: absolute;
-        bottom: clamp(24px, 6vh, 56px);
-        color: var(--cyan);
       }
 
       @keyframes egg-morph {
@@ -755,13 +751,6 @@
   </head>
 
   <body>
-    <div class="egg" id="egg" hidden>
-      <div class="egg-stack" aria-hidden="true">
-        <span></span><span></span><span></span><span></span>
-      </div>
-      <span class="egg-hint telemetry">Tap anywhere to go back</span>
-    </div>
-
 
     <div class="entry" id="top">
       <div class="strip telemetry">
@@ -772,7 +761,10 @@
             type="button"
             aria-label="Show the squares"
           >
-            &reg;</button
+            <span class="mark-glyph">&reg;</span
+            ><span class="mark-anim" aria-hidden="true"
+              ><i></i><i></i><i></i><i></i></span
+            ></button
           ></span
         >
         <span>Brooklyn, NY</span>
@@ -1307,24 +1299,14 @@
 
     <script>
       // Easter egg: a square-to-circle loop Kyle wrote years ago, recoloured
-      // to the cyanotype palette.
+      // to the cyanotype palette. Click the ® to swap it for the animation.
       (function () {
-        const egg = document.getElementById("egg");
         const mark = document.getElementById("mark");
-        if (!egg || !mark) return;
+        if (!mark) return;
 
-        const close = () => {
-          egg.hidden = true;
-          mark.focus();
-        };
-
-        mark.addEventListener("click", () => {
-          egg.hidden = false;
-        });
-        egg.addEventListener("click", close);
-        addEventListener("keydown", (e) => {
-          if (e.key === "Escape" && !egg.hidden) close();
-        });
+        mark.addEventListener("click", () =>
+          mark.classList.toggle("is-live")
+        );
       })();
     </script>
   </body>
