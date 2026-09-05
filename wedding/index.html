@@ -694,12 +694,14 @@
         margin: 0 0 20px;
       }
 
+      /* was margin:0 when the footer held a single paragraph; now there are
+         two and they need separating */
       footer .prose {
-        margin: 0;
+        margin: 0 0 1em;
       }
 
-      footer .notice {
-        margin: 32px 0 0;
+      footer .prose:last-of-type {
+        margin-bottom: 0;
       }
 
       .signoff {
@@ -1254,13 +1256,10 @@
         Text us. If you don't have our numbers, that is itself an answer, but
         find Kyle on the internet and we will sort it out.
       </p>
-      <p class="notice">
-        <span class="telemetry">P.S.</span>
-        <span
-          >There is also an easter egg somewhere on this website. First one to
-          find it, I owe you a cookie. You will know it when you see it — if you
-          are not sure, you have not found it yet.</span
-        >
+      <p class="prose">
+        There is also an easter egg somewhere in this website. First one to find
+        it I will give you a cookie. You'll know it when you see it. If you're
+        unsure, then you haven't found it yet.
       </p>
 
       <div class="signoff telemetry">
