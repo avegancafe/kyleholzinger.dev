@@ -427,13 +427,16 @@
         padding: 0;
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 2px;
-        background: var(--ink);
+        gap: 0;
+        background: var(--substrate);
         border: 2px solid var(--ink);
       }
 
+      /* outlines, not gaps over an ink parent: a partly-filled last row would
+         otherwise leave empty tracks painting the parent as a black slab */
       .plates li {
         background: var(--substrate);
+        outline: 1px solid var(--ink);
         display: flex;
       }
 
@@ -967,25 +970,12 @@
           <li>
             <figure>
               <img
-                src="/assets/wedding/mirror.jpg"
-                alt="Kyle and Elise hugging in a mirrored bathroom, taking a mirror selfie"
-                loading="lazy"
-              />
-              <figcaption>
-                <span class="telemetry idx">02</span>Infinite mirrors, one
-                bathroom.
-              </figcaption>
-            </figure>
-          </li>
-          <li>
-            <figure>
-              <img
                 src="/assets/wedding/waterfront.jpg"
                 alt="Kyle and Elise in sunglasses on a sunny waterfront"
                 loading="lazy"
               />
               <figcaption>
-                <span class="telemetry idx">03</span>A very blue day.
+                <span class="telemetry idx">02</span>A very blue day.
               </figcaption>
             </figure>
           </li>
@@ -997,7 +987,7 @@
                 loading="lazy"
               />
               <figcaption>
-                <span class="telemetry idx">04</span>Elise and Sierra, in
+                <span class="telemetry idx">03</span>Elise and Sierra, in
                 agreement.
               </figcaption>
             </figure>
@@ -1010,7 +1000,7 @@
                 loading="lazy"
               />
               <figcaption>
-                <span class="telemetry idx">05</span>Elise, mid-laugh.
+                <span class="telemetry idx">04</span>Elise, mid-laugh.
               </figcaption>
             </figure>
           </li>
@@ -1023,7 +1013,7 @@
                 loading="lazy"
               />
               <figcaption>
-                <span class="telemetry idx">06</span>A normal Tuesday.
+                <span class="telemetry idx">05</span>A normal Tuesday.
               </figcaption>
             </figure>
           </li>
