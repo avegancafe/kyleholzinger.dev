@@ -53,6 +53,7 @@
       })();
     </script>
     <script type="module" src="/assets/ascii/runtime/ascii.js"></script>
+    <script type="module" src="/assets/ascii/scroll-art.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -351,12 +352,14 @@
          drawn in Prussian blue on the paper. Without JS the photo itself
          shows, from the <noscript> below it. */
       .doorway-plate ascii-art,
+      .doorway-plate scroll-art,
       .doorway-plate noscript img {
         display: block;
         width: 100%;
       }
 
-      .doorway-plate ascii-art {
+      .doorway-plate ascii-art,
+      .doorway-plate scroll-art {
         --ascii-ink: var(--cyan);
         background: var(--cyan-wash);
       }
@@ -604,7 +607,8 @@
         --ascii-ink: var(--cyan);
       }
 
-      .art ascii-art {
+      .art ascii-art,
+      .art scroll-art {
         display: block;
         width: 100%;
         margin: 0 auto;
@@ -624,7 +628,8 @@
         --ascii-ink: var(--cyan);
       }
 
-      .lettering ascii-art {
+      .lettering ascii-art,
+      .lettering scroll-art {
         display: block;
         width: 100%;
       }
@@ -645,7 +650,8 @@
       }
 
       /* the pets, drawn small inside their roster cells */
-      .roster ascii-art {
+      .roster ascii-art,
+      .roster scroll-art {
         display: block;
         width: 100%;
         margin-top: 14px;
@@ -794,6 +800,7 @@
         --macro: var(--mono);
         --body: var(--mono);
         --animation-time: 2s;
+        --ascii-font: var(--mono);
         color-scheme: dark;
       }
 
@@ -973,7 +980,8 @@
       }
 
       /* ---- doorway */
-      [data-theme="hacker"] .doorway-plate ascii-art {
+      [data-theme="hacker"] .doorway-plate ascii-art,
+      [data-theme="hacker"] .doorway-plate scroll-art {
         --ascii-ink: var(--phosphor);
         background: #000;
       }
@@ -1019,7 +1027,8 @@
         max-width: 72ch;
       }
 
-      [data-theme="hacker"] .lettering ascii-art {
+      [data-theme="hacker"] .lettering ascii-art,
+      [data-theme="hacker"] .lettering scroll-art {
         --ascii-ink: var(--phosphor);
       }
 
@@ -1209,8 +1218,10 @@
       }
 
       [data-theme="hacker"] .roster ascii-art,
+      [data-theme="hacker"] .roster scroll-art,
       [data-theme="hacker"] .art,
       [data-theme="hacker"] .art ascii-art,
+      [data-theme="hacker"] .art scroll-art,
       [data-theme="hacker"] .art-rule,
       [data-theme="hacker"] .band {
         --ascii-ink: var(--phosphor);
@@ -1430,14 +1441,14 @@
 
       <a class="doorway" href="#invitation">
         <div class="doorway-plate">
-          <ascii-art
+          <scroll-art
             piece="kyle-elise-hello"
             data-cols="120"
             data-max="18"
             data-paper='{}'
             data-hack='{"look":"ascii","mono":"","contrast":"35"}'
             aria-label="Kyle and Elise leaning close to the camera in sunglasses under a pressed-tin ceiling, as an animated cyanotype"
-          ></ascii-art>
+          ></scroll-art>
           <noscript>
             <img
               src="/assets/wedding/hello-there.jpg"
@@ -1457,13 +1468,21 @@
         <h1 class="macro"><span class="hack">$ whoami<br /></span>Kyle<span class="amp">&amp;</span><br />Elise</h1>
         <div class="lettering">
           <ascii-art
+            class="paper"
             piece="kyle-and-elise"
             data-cols="71"
             data-max="12"
-            data-paper='{"piece":"kyle-and-elise","data-cols":"71","data-max":"12"}'
-            data-hack='{"piece":"kyle-elise-decode","data-cols":"90","data-max":"10"}'
             aria-hidden="true"
           ></ascii-art>
+          <scroll-art
+            class="hack"
+            piece="kyle-elise-santorini"
+            look="dense"
+            mono
+            data-cols="90"
+            data-max="10"
+            aria-label="Kyle and Elise at sunset over the caldera in Santorini, as ASCII art"
+          ></scroll-art>
         </div>
         <p class="lede">
           <span class="paper">are getting married. You almost certainly know this already — word
@@ -1623,16 +1642,24 @@
         <h2><span class="paper">The next day</span><span class="hack">cat next-day.txt</span></h2>
         <figure class="art">
           <ascii-art
+            class="paper"
             piece="walking-dog"
             look="dots"
             mono
             data-cols="96"
             data-max="12"
-            data-paper='{"look":"dots","mono":""}'
-            data-hack='{"look":"ascii","mono":""}'
             aria-label="The park, Saturday, animated ASCII art"
           ></ascii-art>
-          <figcaption class="telemetry">The park, Saturday</figcaption>
+          <scroll-art
+            class="hack"
+            piece="elise-sierra-ascii"
+            look="dense"
+            mono
+            data-cols="80"
+            data-max="12"
+            aria-label="Elise laughing while holding Sierra, who is yelling, as ASCII art"
+          ></scroll-art>
+          <figcaption class="telemetry"><span class="paper">The park, Saturday</span><span class="hack">elise and sierra, in agreement</span></figcaption>
         </figure>
         <p class="prose">
           We are doing a picnic in the park on the Saturday. No structure, no
@@ -1682,16 +1709,24 @@
         <h2><span class="paper">Getting there</span><span class="hack">cat travel.txt</span></h2>
         <figure class="art">
           <ascii-art
+            class="paper"
             piece="liberty-harbor-dawn"
             look="dots"
             mono
             data-cols="192"
             data-max="12"
-            data-paper='{"piece":"liberty-harbor-dawn","look":"dots","mono":"","data-cols":"192","data-max":"12"}'
-            data-hack='{"piece":"world-map-pings","mono":"","data-cols":"100","data-max":"12"}'
             aria-label="The harbour, on approach, animated ASCII art"
           ></ascii-art>
-          <figcaption class="telemetry">The harbour, on approach</figcaption>
+          <scroll-art
+            class="hack"
+            piece="kyle-elise-waterfront"
+            look="dense"
+            mono
+            data-cols="92"
+            data-max="12"
+            aria-label="Kyle and Elise in sunglasses on a sunny waterfront, as ASCII art"
+          ></scroll-art>
+          <figcaption class="telemetry"><span class="paper">The harbour, on approach</span><span class="hack">a very blue day</span></figcaption>
         </figure>
         <p class="prose">
           Greenpoint is the top of Brooklyn, across the river from midtown. It
@@ -1735,15 +1770,23 @@
         <h2><span class="paper">Where to stay</span><span class="hack">cat hotels.txt</span></h2>
         <figure class="art">
           <ascii-art
+            class="paper"
             piece="nyc-skyline-night"
             mono
             data-cols="104"
             data-max="12"
-            data-paper='{"piece":"nyc-skyline-night","mono":"","data-cols":"104","data-max":"12"}'
-            data-hack='{"piece":"terminal-session","mono":"","data-cols":"80","data-max":"12"}'
             aria-label="Across the river, after dark, animated ASCII art"
           ></ascii-art>
-          <figcaption class="telemetry">Across the river, after dark</figcaption>
+          <scroll-art
+            class="hack"
+            piece="kyle-elise-masks"
+            look="dense"
+            mono
+            data-cols="120"
+            data-max="12"
+            aria-label="Kyle and Elise lying down in face masks, as ASCII art"
+          ></scroll-art>
+          <figcaption class="telemetry"><span class="paper">Across the river, after dark</span><span class="hack">a normal tuesday</span></figcaption>
         </figure>
         <p class="prose">
           Everything below is in Greenpoint or Williamsburg, walking distance to
@@ -1827,30 +1870,46 @@
             <span class="tag telemetry">Cat</span>
             <dd><span class="paper">Black, silent, fundamentally unknowable.</span><span class="hack">black; silent; unknowable</span></dd>
             <ascii-art
+              class="paper"
               piece="sleeping-cat"
               look="dots"
               mono
-              data-paper='{"look":"dots","mono":""}'
-              data-hack='{"look":"ascii","mono":""}'
               data-cols="80"
               data-max="6"
               aria-label="A cat asleep, animated ASCII art"
             ></ascii-art>
+            <scroll-art
+              class="hack"
+              piece="leo-ascii"
+              look="dense"
+              mono
+              data-cols="80"
+              data-max="6"
+              aria-label="Leo the black cat, as ASCII art"
+            ></scroll-art>
           </div>
           <div>
             <dt>Sierra</dt>
             <span class="tag telemetry">Dog</span>
             <dd><span class="paper">Mischievous demon. Here for treats and a good time.</span><span class="hack">mischievous demon. wants=treats,fun</span></dd>
             <ascii-art
+              class="paper"
               piece="wagging-pup"
               look="dots"
               mono
-              data-paper='{"look":"dots","mono":""}'
-              data-hack='{"look":"ascii","mono":""}'
               data-cols="60"
               data-max="6"
               aria-label="A puppy wagging its tail, animated ASCII art"
             ></ascii-art>
+            <scroll-art
+              class="hack"
+              piece="sierra-ascii"
+              look="dense"
+              mono
+              data-cols="96"
+              data-max="6"
+              aria-label="Sierra looking out a Brooklyn window, as ASCII art"
+            ></scroll-art>
           </div>
         </dl>
 
@@ -1976,7 +2035,7 @@
     </main>
 
     <div class="band" role="presentation">
-      <ascii-art piece="wave-divider" mono data-cols="96" data-max="14" aria-hidden="true" data-paper='{"piece":"wave-divider","data-cols":"96"}' data-hack='{"piece":"matrix-rain","data-cols":"84"}'></ascii-art>
+      <ascii-art piece="wave-divider" mono data-cols="96" data-max="14" aria-hidden="true" data-paper='{"piece":"wave-divider","data-cols":"96"}' data-hack='{"piece":"heartbeat-rule","data-cols":"96"}'></ascii-art>
     </div>
 
     <footer>
@@ -2078,7 +2137,7 @@
           const size = Math.min(+el.dataset.max || 14, w / cols / 0.602);
           el.setAttribute("size", Math.max(2, size).toFixed(2));
         };
-        const els = [...document.querySelectorAll("ascii-art[data-cols]")];
+        const els = [...document.querySelectorAll("ascii-art[data-cols], scroll-art[data-cols]")];
         const ro = new ResizeObserver((entries) => {
           for (const e of entries)
             for (const el of els) if (el.parentElement === e.target) fit(el);
@@ -2134,7 +2193,7 @@
         window.__stabilize = setStable;
 
         function tuneArt(theme) {
-          document.querySelectorAll("ascii-art[data-paper], ascii-art[data-hack]").forEach((el) => {
+          document.querySelectorAll("ascii-art[data-paper], ascii-art[data-hack], scroll-art[data-paper], scroll-art[data-hack]").forEach((el) => {
             const paper = JSON.parse(el.dataset.paper || "{}");
             const hack = JSON.parse(el.dataset.hack || "{}");
             const want = theme === "hacker" ? hack : paper;
@@ -2202,7 +2261,7 @@
         // every piece holds still while the boot types, so the overlay's
         // timers aren't starved by a dozen canvases drawing underneath it
         const paused = new Set();
-        const pauseArt = () => document.querySelectorAll("ascii-art:not([still])").forEach((el) => { paused.add(el); el.setAttribute("still", ""); });
+        const pauseArt = () => document.querySelectorAll("ascii-art:not([still]), scroll-art:not([still])").forEach((el) => { paused.add(el); el.setAttribute("still", ""); });
         const resumeArt = () => { paused.forEach((el) => el.removeAttribute("still")); paused.clear(); };
 
         const stop = () => {
