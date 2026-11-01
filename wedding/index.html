@@ -39,6 +39,19 @@
       defer
     ></script>
 
+    <script>
+      // Theme, decided before anything paints: ?theme= in the URL, then the
+      // visitor's saved choice, then the OS colour scheme (dark = hacker).
+      (function () {
+        const q = new URLSearchParams(location.search).get("theme");
+        let saved = null;
+        try { saved = localStorage.getItem("wedding-theme"); } catch (e) {}
+        const os = matchMedia("(prefers-color-scheme: dark)").matches ? "hacker" : "paper";
+        const pick = (v) => (v === "hacker" || v === "paper" ? v : null);
+        document.documentElement.dataset.theme = pick(q) || pick(saved) || os;
+        document.documentElement.dataset.themeSource = pick(q) ? "url" : pick(saved) ? "saved" : "os";
+      })();
+    </script>
     <script type="module" src="/assets/ascii/runtime/ascii.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -72,6 +85,13 @@
       *::before,
       *::after {
         box-sizing: border-box;
+      }
+
+      /* Two themes share one page. Copy that differs sits in paired spans:
+         .paper shows in paper mode, .hack in hacker mode. */
+      [data-theme="hacker"] .paper,
+      :root:not([data-theme="hacker"]) .hack {
+        display: none !important;
       }
 
       html {
@@ -739,9 +759,491 @@
         }
       }
 
+
+      /* =====================================================================
+         HACKER MODE. Same page, different machine: phosphor on black, mono
+         everywhere, the tab bar is a shell prompt, and the ASCII pieces are
+         re-tuned by the theme script (data-hack attributes on each one).
+         ===================================================================== */
+
+      [data-theme="hacker"] {
+        --paper: #050806;
+        --substrate: #0a120c;
+        --ink: #5bf26b;
+        --red: #ffb000;
+        --cyan: #5bf26b;
+        --cyan-mid: #2c7a46;
+        --cyan-wash: #0e1a11;
+        --phosphor: #5bf26b;
+        --bright: #b9ffc2;
+        --dim: #1f7a2e;
+        --rule: #163d1e;
+        --macro: "JetBrains Mono", ui-monospace, monospace;
+        --body: "JetBrains Mono", ui-monospace, monospace;
+        --glow: 0 0 6px color-mix(in srgb, var(--phosphor) 55%, transparent);
+        color-scheme: dark;
+      }
+
+      [data-theme="hacker"] body {
+        font-size: 15px;
+        line-height: 1.6;
+        text-shadow: var(--glow);
+      }
+
+      /* scanlines + vignette instead of paper grain */
+      [data-theme="hacker"] body::after {
+        opacity: 1;
+        background-image:
+          radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.55) 100%),
+          repeating-linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0) 0px,
+            rgba(0, 0, 0, 0) 2px,
+            rgba(0, 0, 0, 0.22) 3px
+          );
+      }
+
+      [data-theme="hacker"] ::selection {
+        background: var(--phosphor);
+        color: #000;
+      }
+
+      [data-theme="hacker"] a {
+        color: var(--bright);
+      }
+
+      [data-theme="hacker"] .macro,
+      [data-theme="hacker"] section > h2,
+      [data-theme="hacker"] footer h2,
+      [data-theme="hacker"] .facts .value,
+      [data-theme="hacker"] .roster dt {
+        font-family: var(--mono);
+        font-weight: 500;
+        letter-spacing: 0;
+        text-transform: none;
+        line-height: 1.2;
+      }
+
+      [data-theme="hacker"] .telemetry {
+        letter-spacing: 0.04em;
+        text-transform: lowercase;
+      }
+
+      /* 1px hairlines read as terminal rules; the paper page used 2px slabs */
+      [data-theme="hacker"] .strip,
+      [data-theme="hacker"] .doorway,
+      [data-theme="hacker"] .doorway-plate,
+      [data-theme="hacker"] .tabbar,
+      [data-theme="hacker"] .facts,
+      [data-theme="hacker"] .roster,
+      [data-theme="hacker"] .plates,
+      [data-theme="hacker"] .notice,
+      [data-theme="hacker"] .art,
+      [data-theme="hacker"] .art-rule,
+      [data-theme="hacker"] .exposure {
+        border-color: var(--rule);
+        border-width: 1px;
+      }
+
+      [data-theme="hacker"] .facts,
+      [data-theme="hacker"] .roster {
+        background: var(--rule);
+        gap: 1px;
+      }
+
+      [data-theme="hacker"] .plates li {
+        outline-color: var(--rule);
+      }
+
+      [data-theme="hacker"] .art figcaption,
+      [data-theme="hacker"] .exposure figcaption,
+      [data-theme="hacker"] .plates figcaption {
+        border-top: 1px solid var(--rule);
+      }
+
+      [data-theme="hacker"] .art figcaption::before,
+      [data-theme="hacker"] .plates figcaption .idx::before {
+        content: "// ";
+        color: var(--dim);
+      }
+
+      [data-theme="hacker"] .strip {
+        padding-block: 8px;
+        color: var(--dim);
+      }
+
+      [data-theme="hacker"] .strip .red {
+        color: var(--red);
+      }
+
+      /* blinking block cursor, used on the hail and the prompt */
+      [data-theme="hacker"] .cursor::after {
+        content: "▮";
+        margin-left: 2px;
+        animation: blink 1.1s steps(1) infinite;
+      }
+
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+
+      /* ---- doorway */
+      [data-theme="hacker"] .doorway-plate ascii-art {
+        --ascii-ink: var(--phosphor);
+        background: #000;
+      }
+
+      [data-theme="hacker"] .doorway-hail .macro {
+        font-size: clamp(1.4rem, 3.4vw, 2.4rem);
+        color: var(--phosphor);
+      }
+
+      [data-theme="hacker"] .doorway-hail .macro em {
+        color: var(--bright);
+      }
+
+      [data-theme="hacker"] .enter {
+        color: var(--red);
+      }
+
+      /* ---- masthead */
+      [data-theme="hacker"] .masthead h1 {
+        font-size: clamp(1.6rem, 4vw, 2.6rem);
+        color: var(--bright);
+      }
+
+      [data-theme="hacker"] .masthead h1 .hack {
+        display: block;
+        color: var(--dim);
+        font-size: 0.7em;
+        margin-bottom: 0.4em;
+      }
+
+      [data-theme="hacker"] .masthead h1 .amp {
+        color: var(--red);
+        margin: 0 0.3em;
+      }
+
+      [data-theme="hacker"] .masthead h1 > br {
+        display: none;
+      }
+
+      [data-theme="hacker"] .masthead .lede {
+        font-size: 1rem;
+        color: var(--dim);
+        max-width: 72ch;
+      }
+
+      [data-theme="hacker"] .lettering ascii-art {
+        --ascii-ink: var(--phosphor);
+      }
+
+      /* ---- the prompt (tab bar) */
+      .prompt {
+        display: none;
+      }
+
+      [data-theme="hacker"] .prompt {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 0 8px;
+        padding: 10px var(--gutter) 6px;
+        font-family: var(--mono);
+        font-size: 0.85rem;
+      }
+
+      .prompt-ps1 {
+        color: var(--dim);
+        white-space: nowrap;
+      }
+
+      .prompt-ps1 b {
+        font-weight: 500;
+        color: var(--phosphor);
+      }
+
+      .prompt input {
+        flex: 1 1 10ch;
+        min-width: 10ch;
+        appearance: none;
+        background: none;
+        border: 0;
+        outline: 0;
+        padding: 0;
+        margin: 0;
+        font: inherit;
+        color: var(--bright);
+        caret-color: var(--phosphor);
+        text-shadow: inherit;
+      }
+
+      .prompt input::placeholder {
+        color: var(--rule);
+      }
+
+      .prompt-out {
+        flex: 1 0 100%;
+        min-height: 1.2em;
+        color: var(--dim);
+        white-space: pre-wrap;
+      }
+
+      .prompt-out.is-err {
+        color: var(--red);
+      }
+
+      [data-theme="hacker"] .tabs {
+        border-top: 1px solid var(--rule);
+      }
+
+      [data-theme="hacker"] .tab {
+        background: none;
+        color: var(--dim);
+        border: 0;
+        border-right: 1px solid var(--rule);
+        padding: 8px 18px;
+        text-transform: lowercase;
+        letter-spacing: 0;
+        transition: none;
+      }
+
+      [data-theme="hacker"] .tab:hover:not([aria-selected="true"]) {
+        background: var(--substrate);
+        color: var(--phosphor);
+      }
+
+      [data-theme="hacker"] .tab[aria-selected="true"] {
+        background: var(--substrate);
+        color: var(--bright);
+        box-shadow: inset 0 -2px 0 var(--phosphor);
+      }
+
+      [data-theme="hacker"] .tab-index::before {
+        content: "[";
+      }
+
+      [data-theme="hacker"] .tab-index::after {
+        content: "]";
+      }
+
+      [data-theme="hacker"] .tab-index,
+      [data-theme="hacker"] .tab[aria-selected="true"] .tab-index {
+        color: var(--red);
+      }
+
+      [data-theme="hacker"] .tab-dot {
+        display: none;
+      }
+
+      /* ---- sections as command output */
+      [data-theme="hacker"] section > h2,
+      [data-theme="hacker"] footer h2 {
+        font-size: 1.05rem;
+        color: var(--bright);
+        margin-bottom: 14px;
+      }
+
+      [data-theme="hacker"] section > h2::before,
+      [data-theme="hacker"] footer h2::before {
+        content: "$ ";
+        color: var(--dim);
+      }
+
+      [data-theme="hacker"] .prose {
+        color: var(--phosphor);
+        max-width: 72ch;
+      }
+
+      [data-theme="hacker"] section > .prose {
+        margin: 0 0 28px;
+      }
+
+      [data-theme="hacker"] .facts > div,
+      [data-theme="hacker"] .roster > div {
+        padding: 14px 16px 16px;
+      }
+
+      [data-theme="hacker"] .facts dt {
+        color: var(--dim);
+      }
+
+      [data-theme="hacker"] .facts dt::after {
+        content: "=";
+        color: var(--rule);
+        margin-left: 2px;
+      }
+
+      [data-theme="hacker"] .facts .value {
+        font-size: 1.05rem;
+        text-transform: lowercase;
+        color: var(--bright);
+        margin: 6px 0 8px;
+      }
+
+      [data-theme="hacker"] .facts dd,
+      [data-theme="hacker"] .roster dd {
+        font-size: 0.9rem;
+        color: var(--phosphor);
+        padding-top: 8px;
+      }
+
+      [data-theme="hacker"] .facts dd::before,
+      [data-theme="hacker"] .roster dd::before {
+        content: "# ";
+        color: var(--dim);
+      }
+
+      [data-theme="hacker"] .facts address {
+        color: var(--dim);
+      }
+
+      /* an address is already output; no comment marker in front of it */
+      [data-theme="hacker"] .facts dd:has(> address)::before {
+        content: none;
+      }
+
+      [data-theme="hacker"] .maplink {
+        color: var(--red);
+        text-decoration: none;
+      }
+
+      [data-theme="hacker"] .notice {
+        border-left: 3px solid var(--red);
+        background: var(--substrate);
+      }
+
+      [data-theme="hacker"] .roster dt {
+        font-size: 1rem;
+        color: var(--bright);
+        text-transform: lowercase;
+      }
+
+      [data-theme="hacker"] .roster .tag {
+        color: var(--dim);
+      }
+
+      [data-theme="hacker"] .roster ascii-art,
+      [data-theme="hacker"] .art,
+      [data-theme="hacker"] .art ascii-art,
+      [data-theme="hacker"] .art-rule,
+      [data-theme="hacker"] .band {
+        --ascii-ink: var(--phosphor);
+        background: #000;
+      }
+
+      [data-theme="hacker"] .art figcaption {
+        color: var(--dim);
+        background: var(--paper);
+      }
+
+      [data-theme="hacker"] .plates img {
+        filter: grayscale(1) contrast(1.1) brightness(0.85) sepia(1)
+          hue-rotate(70deg) saturate(2.2);
+      }
+
+      [data-theme="hacker"] .plates figcaption {
+        color: var(--dim);
+        font-size: 0.85rem;
+      }
+
+      [data-theme="hacker"] .plates figcaption .idx {
+        color: var(--phosphor);
+      }
+
+      [data-theme="hacker"] .band {
+        border-color: var(--rule);
+        max-height: 96px;
+        overflow: hidden;
+      }
+
+      /* ---- footer */
+      [data-theme="hacker"] footer {
+        color: var(--phosphor);
+      }
+
+      [data-theme="hacker"] .signoff {
+        color: var(--dim);
+      }
+
+      [data-theme="hacker"] .signoff a {
+        color: var(--phosphor);
+      }
+
+      /* ---- the theme switch, in the strip */
+      .theme-toggle {
+        margin-left: auto;
+        appearance: none;
+        background: none;
+        border: 0;
+        padding: 0;
+        font: inherit;
+        color: var(--red);
+        cursor: pointer;
+        letter-spacing: inherit;
+        text-transform: inherit;
+      }
+
+      .theme-toggle:hover {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+
+      .theme-toggle:focus-visible {
+        outline: 2px solid var(--red);
+        outline-offset: 3px;
+      }
+
+      /* ---- boot sequence overlay */
+      #boot {
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        background: #000;
+        color: #5bf26b;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: clamp(12px, 1.6vw, 15px);
+        line-height: 1.6;
+        padding: clamp(16px, 4vw, 48px);
+        white-space: pre-wrap;
+        cursor: pointer;
+        text-shadow: 0 0 6px rgba(91, 242, 107, 0.55);
+      }
+
+      #boot[hidden] {
+        display: none;
+      }
+
+      #boot .ok {
+        color: #b9ffc2;
+      }
+
+      #boot .skip {
+        position: absolute;
+        right: clamp(16px, 4vw, 48px);
+        bottom: clamp(16px, 4vw, 48px);
+        color: #1f7a2e;
+        font-size: 0.8em;
+      }
+
+      @media (max-width: 560px) {
+        [data-theme="hacker"] .tab:nth-child(odd),
+        [data-theme="hacker"] .tab:nth-child(1),
+        [data-theme="hacker"] .tab:nth-child(2) {
+          border-color: var(--rule);
+          border-width: 1px;
+        }
+      }
+
       @media (prefers-reduced-motion: reduce) {
         html {
           scroll-behavior: auto;
+        }
+
+        [data-theme="hacker"] .cursor::after {
+          animation: none;
         }
 
         .tab {
@@ -757,6 +1259,7 @@
   </head>
 
   <body>
+    <div id="boot" hidden aria-live="polite" aria-label="Boot sequence"><span class="skip">any key skips</span></div>
 
     <div class="entry" id="top">
       <div class="strip telemetry">
@@ -776,6 +1279,9 @@
         <span>Brooklyn, NY</span>
         <span>Together since 2022</span>
         <span class="red">Friday, July 9, 2027</span>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false">
+          <span class="paper">[ Hacker mode ]</span><span class="hack">theme --set paper</span>
+        </button>
       </div>
 
       <a class="doorway" href="#invitation">
@@ -784,6 +1290,8 @@
             piece="kyle-elise-hello"
             data-cols="120"
             data-max="18"
+            data-paper='{}'
+            data-hack='{"look":"ascii","mono":"","contrast":"35"}'
             aria-label="Kyle and Elise leaning close to the camera in sunglasses under a pressed-tin ceiling, as an animated cyanotype"
           ></ascii-art>
           <noscript>
@@ -794,30 +1302,38 @@
           </noscript>
         </div>
         <div class="doorway-hail">
-          <p class="macro">Oh hello <em>there</em></p>
-          <span class="enter telemetry">[ Enter ]</span>
+          <p class="macro"><span class="paper">Oh hello <em>there</em></span><span class="hack cursor">&gt; oh hello <em>there</em></span></p>
+          <span class="enter telemetry"><span class="paper">[ Enter ]</span><span class="hack">[ press enter ]</span></span>
         </div>
       </a>
     </div>
 
     <main id="invitation">
       <header class="masthead">
-        <h1 class="macro">Kyle<span class="amp">&amp;</span><br />Elise</h1>
+        <h1 class="macro"><span class="hack">$ whoami<br /></span>Kyle<span class="amp">&amp;</span><br />Elise</h1>
         <div class="lettering">
           <ascii-art
             piece="kyle-and-elise"
             data-cols="71"
             data-max="12"
+            data-paper='{"piece":"kyle-and-elise","data-cols":"71","data-max":"12"}'
+            data-hack='{"piece":"kyle-elise-decode","data-cols":"90","data-max":"10"}'
             aria-hidden="true"
           ></ascii-art>
         </div>
         <p class="lede">
-          are getting married. You almost certainly know this already — word
-          of mouth has been running well ahead of the invitations.
+          <span class="paper">are getting married. You almost certainly know this already — word
+          of mouth has been running well ahead of the invitations.</span><span class="hack"># status: engaged. you almost certainly knew this already; word of
+          mouth has been running well ahead of the invitations.</span>
         </p>
       </header>
 
       <nav class="tabbar" id="tabbar" aria-label="Sections">
+        <form class="prompt" id="prompt" autocomplete="off">
+          <label class="prompt-ps1" for="cmd"><b>guest@kyle-elise</b>:~$</label>
+          <input id="cmd" name="cmd" type="text" spellcheck="false" autocapitalize="off" aria-label="Command" placeholder="help" />
+          <output class="prompt-out" id="prompt-out" for="cmd"></output>
+        </form>
         <div class="tabs" role="tablist" aria-label="Wedding details">
           <button
             class="tab"
@@ -881,7 +1397,7 @@
         aria-labelledby="tab-day"
       >
       <section class="bay">
-        <h2>Where things stand</h2>
+        <h2><span class="paper">Where things stand</span><span class="hack">cat the-day.txt</span></h2>
         <figure class="art">
           <ascii-art
             piece="east-river-bridge-sunrise"
@@ -889,6 +1405,8 @@
             mono
             data-cols="192"
             data-max="12"
+            data-paper='{"piece":"east-river-bridge-sunrise","look":"dots","mono":"","data-cols":"192","data-max":"12"}'
+            data-hack='{"piece":"nyc-skyline-night","data-cols":"104","data-max":"12"}'
             aria-label="Greenpoint, from the river, animated ASCII art"
           ></ascii-art>
           <figcaption class="telemetry">Greenpoint, from the river</figcaption>
@@ -920,7 +1438,7 @@
             <span class="value"
               ><time datetime="2027-07-09">July 9, 2027</time></span
             >
-            <dd>The Friday. Clear the evening.</dd>
+            <dd><span class="paper">The Friday. Clear the evening.</span><span class="hack">the friday. evening=cleared</span></dd>
           </div>
           <div>
             <dt class="telemetry">Place</dt>
@@ -933,19 +1451,19 @@
               <a
                 class="telemetry maplink"
                 href="https://maps.apple.com/?q=Rule%20of%20Thirds&amp;address=171%20Banker%20St,%20Brooklyn,%20NY%2011222"
-                >[ Open in Maps ]</a
+                ><span class="paper">[ Open in Maps ]</span><span class="hack">[ open --maps ]</span></a
               >
             </dd>
           </div>
           <div>
             <dt class="telemetry">Dress code</dt>
             <span class="value">Cocktail attire</span>
-            <dd>We considered togas and ruled against them.</dd>
+            <dd><span class="paper">We considered togas and ruled against them.</span><span class="hack">togas: considered, rejected</span></dd>
           </div>
           <div>
             <dt class="telemetry">RSVP</dt>
             <span class="value">Not open</span>
-            <dd>You will hear from us. You will hear from us a lot.</dd>
+            <dd><span class="paper">You will hear from us. You will hear from us a lot.</span><span class="hack">status=closed; notifications=many</span></dd>
           </div>
         </dl>
       </section>
@@ -958,7 +1476,7 @@
         aria-labelledby="tab-next"
       >
       <section class="bay">
-        <h2>The next day</h2>
+        <h2><span class="paper">The next day</span><span class="hack">cat next-day.txt</span></h2>
         <figure class="art">
           <ascii-art
             piece="walking-dog"
@@ -966,6 +1484,8 @@
             mono
             data-cols="96"
             data-max="12"
+            data-paper='{"look":"dots","mono":""}'
+            data-hack='{"look":"ascii","mono":""}'
             aria-label="The park, Saturday, animated ASCII art"
           ></ascii-art>
           <figcaption class="telemetry">The park, Saturday</figcaption>
@@ -982,12 +1502,12 @@
             <span class="value"
               ><time datetime="2027-07-10">July 10, 2027</time></span
             >
-            <dd>The Saturday. Recover first.</dd>
+            <dd><span class="paper">The Saturday. Recover first.</span><span class="hack">the saturday. recover first</span></dd>
           </div>
           <div>
             <dt class="telemetry">Time</dt>
             <span class="value"><time datetime="14:00">2:00 PM</time></span>
-            <dd>Loosely. It is a picnic.</dd>
+            <dd><span class="paper">Loosely. It is a picnic.</span><span class="hack">approx. it is a picnic</span></dd>
           </div>
           <div>
             <dt class="telemetry">Place</dt>
@@ -1000,7 +1520,7 @@
               <a
                 class="telemetry maplink"
                 href="https://maps.apple.com/?q=McCarren%20Park&amp;address=776%20Lorimer%20St,%20Brooklyn,%20NY"
-                >[ Open in Maps ]</a
+                ><span class="paper">[ Open in Maps ]</span><span class="hack">[ open --maps ]</span></a
               >
             </dd>
           </div>
@@ -1015,7 +1535,7 @@
         aria-labelledby="tab-travel"
       >
       <section class="bay">
-        <h2>Getting there</h2>
+        <h2><span class="paper">Getting there</span><span class="hack">cat travel.txt</span></h2>
         <figure class="art">
           <ascii-art
             piece="liberty-harbor-dawn"
@@ -1023,6 +1543,8 @@
             mono
             data-cols="192"
             data-max="12"
+            data-paper='{"piece":"liberty-harbor-dawn","look":"dots","mono":"","data-cols":"192","data-max":"12"}'
+            data-hack='{"piece":"world-map-pings","mono":"","data-cols":"100","data-max":"12"}'
             aria-label="The harbour, on approach, animated ASCII art"
           ></ascii-art>
           <figcaption class="telemetry">The harbour, on approach</figcaption>
@@ -1046,33 +1568,35 @@
             <dt class="telemetry">Flying</dt>
             <span class="value">LaGuardia</span>
             <dd>
-              Closest by a wide margin. And JFK and Newark are technically…
-              options.
+              <span class="paper">Closest by a wide margin. And JFK and Newark are technically…
+              options.</span><span class="hack">closest by a wide margin. jfk, ewr: technically... options</span>
             </dd>
           </div>
           <div>
             <dt class="telemetry">Driving</dt>
             <span class="value">Do not</span>
             <dd>
-              Street parking in Greenpoint on a Friday night is a character
-              test. Take a car service.
+              <span class="paper">Street parking in Greenpoint on a Friday night is a character
+              test. Take a car service.</span><span class="hack">street parking on a friday night is a character test. exec car-service</span>
             </dd>
           </div>
         </dl>
       </section>
 
       <div class="art-rule" role="presentation">
-        <ascii-art piece="dotted-rule" mono data-cols="90" data-max="14" aria-hidden="true"></ascii-art>
+        <ascii-art piece="dotted-rule" mono data-cols="90" data-max="14" aria-hidden="true" data-paper='{"piece":"dotted-rule","data-cols":"90"}' data-hack='{"piece":"heartbeat-rule","data-cols":"96"}'></ascii-art>
       </div>
 
       <section class="bay">
-        <h2>Where to stay</h2>
+        <h2><span class="paper">Where to stay</span><span class="hack">cat hotels.txt</span></h2>
         <figure class="art">
           <ascii-art
             piece="nyc-skyline-night"
             mono
             data-cols="104"
             data-max="12"
+            data-paper='{"piece":"nyc-skyline-night","mono":"","data-cols":"104","data-max":"12"}'
+            data-hack='{"piece":"terminal-session","mono":"","data-cols":"80","data-max":"12"}'
             aria-label="Across the river, after dark, animated ASCII art"
           ></ascii-art>
           <figcaption class="telemetry">Across the river, after dark</figcaption>
@@ -1083,7 +1607,7 @@
         </p>
 
         <p class="notice">
-          <span class="telemetry">Note</span>
+          <span class="telemetry"><span class="paper">Note</span><span class="hack">WARN</span></span>
           <span
             >We are working on a hotel block and will post it here well before
             you need to book anything.</span
@@ -1100,7 +1624,7 @@
               <a
                 class="telemetry maplink"
                 href="https://maps.apple.com/?q=The%20William%20Vale%2C%20Brooklyn"
-                >[ Open in Maps ]</a
+                ><span class="paper">[ Open in Maps ]</span><span class="hack">[ open --maps ]</span></a
               >
             </dd>
           </div>
@@ -1113,7 +1637,7 @@
               <a
                 class="telemetry maplink"
                 href="https://maps.apple.com/?q=CODA%20Williamsburg%2C%20Brooklyn"
-                >[ Open in Maps ]</a
+                ><span class="paper">[ Open in Maps ]</span><span class="hack">[ open --maps ]</span></a
               >
             </dd>
           </div>
@@ -1126,7 +1650,7 @@
               <a
                 class="telemetry maplink"
                 href="https://maps.apple.com/?q=The%20Hoxton%20Williamsburg%2C%20Brooklyn"
-                >[ Open in Maps ]</a
+                ><span class="paper">[ Open in Maps ]</span><span class="hack">[ open --maps ]</span></a
               >
             </dd>
           </div>
@@ -1141,27 +1665,29 @@
         aria-labelledby="tab-us"
       >
       <section class="bay">
-        <h2>The household</h2>
+        <h2><span class="paper">The household</span><span class="hack">cat household.txt</span></h2>
 
         <dl class="roster">
           <div>
             <dt>Elise</dt>
             <span class="tag telemetry">Unit 01</span>
-            <dd>Outvoted by the pets regularly.</dd>
+            <dd><span class="paper">Outvoted by the pets regularly.</span><span class="hack">outvoted-by-pets: regularly</span></dd>
           </div>
           <div>
             <dt>Kyle</dt>
             <span class="tag telemetry">Unit 02</span>
-            <dd>Same. They run our household.</dd>
+            <dd><span class="paper">Same. They run our household.</span><span class="hack">same. pets=root</span></dd>
           </div>
           <div>
             <dt>Leo</dt>
             <span class="tag telemetry">Cat</span>
-            <dd>Black, silent, fundamentally unknowable.</dd>
+            <dd><span class="paper">Black, silent, fundamentally unknowable.</span><span class="hack">black; silent; unknowable</span></dd>
             <ascii-art
               piece="sleeping-cat"
               look="dots"
               mono
+              data-paper='{"look":"dots","mono":""}'
+              data-hack='{"look":"ascii","mono":""}'
               data-cols="80"
               data-max="6"
               aria-label="A cat asleep, animated ASCII art"
@@ -1170,11 +1696,13 @@
           <div>
             <dt>Sierra</dt>
             <span class="tag telemetry">Dog</span>
-            <dd>Mischievous demon. Here for treats and a good time.</dd>
+            <dd><span class="paper">Mischievous demon. Here for treats and a good time.</span><span class="hack">mischievous demon. wants=treats,fun</span></dd>
             <ascii-art
               piece="wagging-pup"
               look="dots"
               mono
+              data-paper='{"look":"dots","mono":""}'
+              data-hack='{"look":"ascii","mono":""}'
               data-cols="60"
               data-max="6"
               aria-label="A puppy wagging its tail, animated ASCII art"
@@ -1225,11 +1753,11 @@
       </section>
 
       <div class="art-rule" role="presentation">
-        <ascii-art piece="dotted-rule" mono data-cols="90" data-max="14" aria-hidden="true"></ascii-art>
+        <ascii-art piece="dotted-rule" mono data-cols="90" data-max="14" aria-hidden="true" data-paper='{"piece":"dotted-rule","data-cols":"90"}' data-hack='{"piece":"heartbeat-rule","data-cols":"96"}'></ascii-art>
       </div>
 
       <section class="bay">
-        <h2>Enjoy these pictures of us being cute</h2>
+        <h2><span class="paper">Enjoy these pictures of us being cute</span><span class="hack">cat pictures.txt</span></h2>
         <p class="prose">
           There is no "our story" section on this website. Nobody has ever
           finished reading one.
@@ -1304,14 +1832,15 @@
     </main>
 
     <div class="band" role="presentation">
-      <ascii-art piece="wave-divider" mono data-cols="96" data-max="14" aria-hidden="true"></ascii-art>
+      <ascii-art piece="wave-divider" mono data-cols="96" data-max="14" aria-hidden="true" data-paper='{"piece":"wave-divider","data-cols":"96"}' data-hack='{"piece":"matrix-rain","data-cols":"84"}'></ascii-art>
     </div>
 
     <footer>
-      <h2>Questions</h2>
+      <h2><span class="paper">Questions</span><span class="hack">man questions</span></h2>
       <p class="prose">
-        Text us. If you don't have our numbers, that is itself an answer, but
-        find Kyle on the internet and we will sort it out.
+        <span class="paper">Text us. If you don't have our numbers, that is itself an answer, but
+        find Kyle on the internet and we will sort it out.</span><span class="hack">text us. no number on file is itself an answer, but kyle is
+        findable on the internet and we will sort it out.</span>
       </p>
       <p class="prose">
         There is also an easter egg somewhere in this website. First one to find
@@ -1321,8 +1850,9 @@
 
       <div class="signoff telemetry">
         <a href="/">kyleholzinger.dev</a>
-        <span>Rev 04</span>
-        <span class="red">Updated Nov 2026</span>
+        <span class="hack">exit 0</span>
+        <span><span class="paper">Rev 05</span><span class="hack">rev 05</span></span>
+        <span class="red"><span class="paper">Updated Nov 2026</span><span class="hack">updated nov 2026</span></span>
       </div>
     </footer>
     <script>
@@ -1394,6 +1924,8 @@
       // Every piece has a fixed number of columns, so its width is
       // cols × cell × font-size. Size each one from the box it sits in; the
       // runtime only crops otherwise. A cell is 0.602 of the font size wide.
+      // Exposed on window because the theme switch swaps pieces and needs a
+      // refit afterwards.
       (function () {
         const fit = (el) => {
           const w = el.parentElement.clientWidth;
@@ -1410,6 +1942,196 @@
         els.forEach((el) => {
           fit(el);
           ro.observe(el.parentElement);
+        });
+        window.__fitArt = () => els.forEach(fit);
+      })();
+    </script>
+
+    <script>
+      // Theme switch. The <html data-theme> was set before paint (head); this
+      // owns changing it: the toggle, the prompt's `paper`/`hacker` commands,
+      // following the OS while the visitor hasn't chosen, and re-tuning every
+      // piece from its data-paper / data-hack attribute sets.
+      (function () {
+        const root = document.documentElement;
+        const ART_ATTRS = ["piece", "look", "mono", "contrast", "chars", "all", "still", "data-cols", "data-max"];
+        const toggle = document.getElementById("theme-toggle");
+        const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+
+        function tuneArt(theme) {
+          document.querySelectorAll("ascii-art[data-paper], ascii-art[data-hack]").forEach((el) => {
+            const paper = JSON.parse(el.dataset.paper || "{}");
+            const hack = JSON.parse(el.dataset.hack || "{}");
+            const want = theme === "hacker" ? hack : paper;
+            // only attributes either theme touches are reset, so static ones stay
+            const touched = new Set([...Object.keys(paper), ...Object.keys(hack)]);
+            for (const a of ART_ATTRS) if (touched.has(a) && !(a in want)) el.removeAttribute(a);
+            for (const [a, v] of Object.entries(want)) el.setAttribute(a, v);
+          });
+          window.__fitArt && window.__fitArt();
+        }
+
+        function apply(theme, { save = false } = {}) {
+          const was = root.dataset.theme;
+          root.dataset.theme = theme;
+          if (save) {
+            root.dataset.themeSource = "saved";
+            try { localStorage.setItem("wedding-theme", theme); } catch (e) {}
+          }
+          toggle.setAttribute("aria-pressed", String(theme === "hacker"));
+          tuneArt(theme);
+          if (theme === "hacker" && was !== "hacker") window.__boot && window.__boot();
+        }
+
+        toggle.addEventListener("click", () =>
+          apply(root.dataset.theme === "hacker" ? "paper" : "hacker", { save: true })
+        );
+
+        // follow the OS until the visitor picks
+        matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+          if (root.dataset.themeSource === "os") apply(e.matches ? "hacker" : "paper");
+        });
+
+        window.__setTheme = (t) => apply(t, { save: true });
+        // first pass: tune art to whatever the head script decided, boot if hacker
+        toggle.setAttribute("aria-pressed", String(root.dataset.theme === "hacker"));
+        tuneArt(root.dataset.theme);
+        if (root.dataset.theme === "hacker" && !reduced.matches) {
+          let booted = false;
+          try { booted = sessionStorage.getItem("wedding-booted") === "1"; } catch (e) {}
+          if (!booted) addEventListener("DOMContentLoaded", () => window.__boot && window.__boot(), { once: true });
+        }
+      })();
+    </script>
+
+    <script>
+      // Boot sequence: a few typed lines over black when hacker mode starts.
+      // Any key or click skips it; reduced motion never shows it; it runs once
+      // per browser session.
+      (function () {
+        const boot = document.getElementById("boot");
+        if (!boot) return;
+        const LINES = [
+          ["kyle-elise.local login: ", "guest"],
+          ["password: ", "••••••••"],
+          ["mounting /invitation ........ ", "OK"],
+          ["starting wedding.service ..... ", "OK"],
+          ["loading guests (you) ......... ", "OK"],
+          ["", ""],
+          ["welcome. type help.", ""],
+        ];
+        let running = false, timer = 0, deadline = 0, log = null;
+
+        // every piece holds still while the boot types, so the overlay's
+        // timers aren't starved by a dozen canvases drawing underneath it
+        const paused = new Set();
+        const pauseArt = () => document.querySelectorAll("ascii-art:not([still])").forEach((el) => { paused.add(el); el.setAttribute("still", ""); });
+        const resumeArt = () => { paused.forEach((el) => el.removeAttribute("still")); paused.clear(); };
+
+        const stop = () => {
+          clearTimeout(timer);
+          clearTimeout(deadline);
+          running = false;
+          boot.hidden = true;
+          resumeArt();
+          boot.removeEventListener("click", stop);
+          removeEventListener("keydown", stop, true);
+          try { sessionStorage.setItem("wedding-booted", "1"); } catch (e) {}
+          const cmd = document.getElementById("cmd");
+          if (cmd && matchMedia("(min-width: 721px)").matches) cmd.focus({ preventScroll: true });
+        };
+
+        window.__boot = () => {
+          if (running || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+          running = true;
+          pauseArt();
+          // hard deadline: whatever the frame budget looks like on this
+          // machine, nobody waits more than ~3.5 s to see the page
+          deadline = setTimeout(stop, 3500);
+          boot.hidden = false;
+          boot.querySelectorAll(".log").forEach((n) => n.remove());
+          log = document.createElement("div");
+          log.className = "log";
+          boot.prepend(log);
+          boot.addEventListener("click", stop);
+          addEventListener("keydown", stop, true);
+          let i = 0;
+          const next = () => {
+            if (i >= LINES.length) { timer = setTimeout(stop, 600); return; }
+            const [prompt, answer] = LINES[i++];
+            const line = document.createElement("div");
+            line.textContent = prompt;
+            log.appendChild(line);
+            let k = 0;
+            const type = () => {
+              if (k < answer.length) {
+                k++;
+                line.innerHTML = prompt + (answer === "OK" ? `<span class="ok">${answer.slice(0, k)}</span>` : answer.slice(0, k));
+                timer = setTimeout(type, answer === "OK" ? 0 : 35);
+              } else timer = setTimeout(next, prompt ? 200 : 80);
+            };
+            type();
+          };
+          next();
+        };
+      })();
+    </script>
+
+    <script>
+      // The prompt. In hacker mode the tab bar is a shell: type a section
+      // name, a number, or one of a few commands. Digits 1-4 work anywhere
+      // outside the input. Tab clicks keep working through the same select().
+      (function () {
+        const form = document.getElementById("prompt");
+        const input = document.getElementById("cmd");
+        const out = document.getElementById("prompt-out");
+        if (!form) return;
+        const tabs = [...document.querySelectorAll('[role="tab"]')];
+        const keys = tabs.map((t) => t.id.replace("tab-", ""));
+        const go = (key) => {
+          const tab = tabs.find((t) => t.id === "tab-" + key);
+          if (tab) tab.click();
+          return !!tab;
+        };
+        const say = (msg, err = false) => {
+          out.textContent = msg;
+          out.classList.toggle("is-err", err);
+        };
+        const HELP = "sections: " + keys.join("  ") + "   (or 1-4)   ·   theme: paper | hacker   ·   ls, clear, exit";
+
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const raw = input.value.trim();
+          input.value = "";
+          if (!raw) return;
+          const [cmd, ...args] = raw.toLowerCase().replace(/^(cd|open|cat|go)\s+/, "").split(/\s+/);
+          const alias = { 1: "day", 2: "next", 3: "travel", 4: "us", "the-day": "day", "next-day": "next", household: "us", pets: "us", hotels: "travel", stay: "travel" };
+          const key = alias[cmd] || cmd.replace(/\.txt$/, "");
+          if (keys.includes(key)) { go(key); say("$ " + raw); return; }
+          switch (cmd) {
+            case "help": case "?": case "man": say(HELP); break;
+            case "ls": say(keys.map((k) => k + ".txt").join("  ")); break;
+            case "clear": say(""); scrollTo({ top: 0, behavior: "smooth" }); break;
+            case "paper": case "light": case "day-mode": say("switching to paper"); window.__setTheme("paper"); break;
+            case "hacker": case "dark": say("already here"); break;
+            case "theme": say(args[0] === "--set" && (args[1] === "paper" || args[1] === "hacker") ? (window.__setTheme(args[1]), "theme set") : "usage: theme --set paper|hacker"); break;
+            case "whoami": say("guest"); break;
+            case "date": say("fri jul 9 2027, the friday. clear the evening."); break;
+            case "rsvp": say("rsvp: status=closed. you will hear from us. a lot."); break;
+            case "sudo": say("guest is not in the sudoers file. this incident will be reported (to elise).", true); break;
+            case "exit": case "logout": say("logout"); setTimeout(() => (location.href = "/"), 400); break;
+            default: say(`${cmd}: command not found. try help`, true);
+          }
+        });
+
+        addEventListener("keydown", (e) => {
+          if (document.documentElement.dataset.theme !== "hacker") return;
+          if (e.metaKey || e.ctrlKey || e.altKey) return;
+          const typing = /^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName);
+          if (!typing && "1234".includes(e.key) && e.key) { if (go(keys[+e.key - 1])) e.preventDefault(); }
+          if (!typing && e.key === "Enter" && location.hash === "" && scrollY < 40) {
+            document.querySelector(".doorway").click();
+          }
         });
       })();
     </script>
