@@ -13,7 +13,9 @@
 
 @font-face {
   font-family: 'Berkeley Mono';
-  src: url('/assets/berkeley-mono.woff') url('/assets/berkeley-mono.woff2');
+  src: url('/assets/berkeley-mono.woff2') format('woff2'),
+    url('/assets/berkeley-mono.woff') format('woff');
+  font-display: swap;
 }
 
 * {

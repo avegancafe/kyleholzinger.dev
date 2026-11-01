@@ -62,6 +62,15 @@
     />
 
     <style>
+      /* The blog's face, for hacker mode. The blog's own @font-face has a
+         malformed src and never loads; this one does. */
+      @font-face {
+        font-family: "Berkeley Mono";
+        src: url("/assets/berkeley-mono.woff2") format("woff2"),
+          url("/assets/berkeley-mono.woff") format("woff");
+        font-display: swap;
+      }
+
       :root {
         --paper: #f4f4f0;
         --substrate: #eae8e3;
@@ -766,46 +775,120 @@
          re-tuned by the theme script (data-hack attributes on each one).
          ===================================================================== */
 
+      /* The same machine as kyleholzinger.dev: the blog's green, its Berkeley
+         Mono, and its CRT (scanlines + RGB stripe, flicker, chromatic
+         aberration that gets jumpier the longer you stay). */
       [data-theme="hacker"] {
-        --paper: #050806;
-        --substrate: #0a120c;
-        --ink: #5bf26b;
+        --paper: #000;
+        --substrate: #071504;
+        --ink: #38a824;
         --red: #ffb000;
-        --cyan: #5bf26b;
-        --cyan-mid: #2c7a46;
-        --cyan-wash: #0e1a11;
-        --phosphor: #5bf26b;
-        --bright: #b9ffc2;
-        --dim: #1f7a2e;
-        --rule: #163d1e;
-        --macro: "JetBrains Mono", ui-monospace, monospace;
-        --body: "JetBrains Mono", ui-monospace, monospace;
-        --glow: 0 0 6px color-mix(in srgb, var(--phosphor) 55%, transparent);
+        --cyan: #38a824;
+        --cyan-mid: #2a7f1b;
+        --cyan-wash: #071504;
+        --phosphor: #38a824;
+        --bright: #6fd650;
+        --dim: #1f6a14;
+        --rule: #0e2a09;
+        --mono: "Berkeley Mono", "JetBrains Mono", Courier, monospace;
+        --macro: var(--mono);
+        --body: var(--mono);
+        --animation-time: 2s;
         color-scheme: dark;
       }
 
       [data-theme="hacker"] body {
         font-size: 15px;
         line-height: 1.6;
-        text-shadow: var(--glow);
+        /* the blog's textShadow loop: blue ghost right, red ghost left, a
+           3px glow. Duration comes from --animation-time, which the theme
+           script re-rolls every second (ported from the blog's index.js). */
+        animation: crt-text-shadow var(--animation-time) infinite;
       }
 
-      /* scanlines + vignette instead of paper grain */
-      [data-theme="hacker"] body::after {
-        opacity: 1;
-        background-image:
-          radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.55) 100%),
-          repeating-linear-gradient(
-            to bottom,
-            rgba(0, 0, 0, 0) 0px,
-            rgba(0, 0, 0, 0) 2px,
-            rgba(0, 0, 0, 0.22) 3px
+      /* scanlines and an RGB sub-pixel stripe over everything, boot included */
+      [data-theme="hacker"] body::before {
+        content: " ";
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        pointer-events: none;
+        background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+          linear-gradient(
+            90deg,
+            rgba(255, 0, 0, 0.06),
+            rgba(0, 255, 0, 0.02),
+            rgba(0, 0, 255, 0.06)
           );
+        background-size: 100% 2px, 2px 100%;
+      }
+
+      /* the flicker layer replaces paper's grain */
+      [data-theme="hacker"] body::after {
+        z-index: 60;
+        opacity: 0;
+        background-image: none;
+        background: rgba(18, 16, 16, 0.1);
+        animation: crt-flicker 0.15s infinite;
+      }
+
+      /* "stabilize": the picture holds still */
+      .is-stable[data-theme="hacker"] body,
+      .is-stable[data-theme="hacker"] body::after {
+        animation-play-state: paused;
+      }
+
+      @keyframes crt-flicker {
+        0% { opacity: 0.67; }
+        5% { opacity: 0.67; }
+        10% { opacity: 0.67; }
+        15% { opacity: 0.9; }
+        20% { opacity: 0.18; }
+        25% { opacity: 0.83; }
+        30% { opacity: 0.65; }
+        35% { opacity: 0.67; }
+        40% { opacity: 0.66; }
+        45% { opacity: 0.96; }
+        50% { opacity: 0.96; }
+        55% { opacity: 0.08; }
+        60% { opacity: 0.6; }
+        65% { opacity: 0.71; }
+        70% { opacity: 0.53; }
+        75% { opacity: 0.37; }
+        80% { opacity: 0.71; }
+        85% { opacity: 0.7; }
+        90% { opacity: 0.7; }
+        95% { opacity: 0.36; }
+        100% { opacity: 0.64; }
+      }
+
+      @keyframes crt-text-shadow {
+        0% { text-shadow: 0.4389924193300864px 0 1px rgba(0, 30, 255, 0.5), -0.4389924193300864px 0 1px rgba(255, 0, 80, 0.3), 0 0 3px; }
+        5% { text-shadow: 0.4389924193300864px 0 1px rgba(0, 30, 255, 0.5), -0.4389924193300864px 0 1px rgba(255, 0, 80, 0.3), 0 0 3px; }
+        10% { text-shadow: 0.4389924193300864px 0 1px rgba(0, 30, 255, 0.5), -0.4389924193300864px 0 1px rgba(255, 0, 80, 0.3), 0 0 3px; }
+        15% { text-shadow: 0.4389924193300864px 0 1px rgba(0, 30, 255, 0.5), -0.4389924193300864px 0 1px rgba(255, 0, 80, 0.3), 0 0 3px; }
+        20% { text-shadow: 2.4794037899852017px 0 1px rgba(0, 30, 255, 0.5), -2.4794037899852017px 0 1px rgba(255, 0, 80, 0.3), 0 0 3px; }
+        25% { text-shadow: 2.4794037899852017px 0 1px rgba(0, 30, 255, 0.5), -2.4794037899852017px 0 1px rgba(255, 0, 80, 0.3), 0 0 3px; }
+        30% { text-shadow: 1.4794037899852017px 0 1px rgba(0, 30, 255, 0.5), -2.4794037899852017px 0 1px rgba(255, 0, 80, 0.3), 0 0 3px; }
+        35% { text-shadow: 2.4794037899852017px 0 1px rgba(0, 30, 255, 0.5), -2.4794037899852017px 0 1px rgba(255, 0, 80, 0.3), 0 0 3px; }
+        40% { text-shadow: 2.870905614848819px 0 1px rgba(0, 30, 255, 0.5), -2.870905614848819px 0 1px rgba(255, 0, 80, 0.3), 0 0 3px; }
+        45% { text-shadow: 2.370905614848819px 0 1px rgba(0, 30, 255, 0.5), -2.870905614848819px 0 1px rgba(255, 0, 80, 0.3), 0 0 3px; }
+        50% { text-shadow: 0.08084290417898504px 0 1px rgba(0, 30, 255, 0.5), -0.08084290417898504px 0 1px rgba(255, 0, 80, 0.3), 0 0 3px; }
+        55% { text-shadow: 0.08084290417898504px 0 1px rgba(0, 30, 255, 0.5), -0.08084290417898504px 0 1px rgba(255, 0, 80, 0.3), 0 0 3px; }
+        60% { text-shadow: 0.08084290417898504px 0 1px rgba(0, 30, 255, 0.5), -0.08084290417898504px 0 1px rgba(255, 0, 80, 0.3), 0 0 3px; }
+        65% { text-shadow: 0.08084290417898504px 0 1px rgba(0, 30, 255, 0.5), -0.08084290417898504px 0 1px rgba(255, 0, 80, 0.3), 0 0 3px; }
+        70% { text-shadow: 0.48874025155497314px 0 1px rgba(0, 30, 255, 0.5), -0.48874025155497314px 0 1px rgba(255, 0, 80, 0.3), 0 0 3px; }
+        75% { text-shadow: 0.48874025155497314px 0 1px rgba(0, 30, 255, 0.5), -0.48874025155497314px 0 1px rgba(255, 0, 80, 0.3), 0 0 3px; }
+        80% { text-shadow: 0.0833037308038857px 0 1px rgba(0, 30, 255, 0.5), -0.0833037308038857px 0 1px rgba(255, 0, 80, 0.3), 0 0 3px; }
+        85% { text-shadow: 0.09769827255241735px 0 1px rgba(0, 30, 255, 0.5), -0.09769827255241735px 0 1px rgba(255, 0, 80, 0.3), 0 0 3px; }
+        90% { text-shadow: 2.443339761481782px 0 1px rgba(0, 30, 255, 0.5), -2.443339761481782px 0 1px rgba(255, 0, 80, 0.3), 0 0 3px; }
+        95% { text-shadow: 2.443339761481782px 0 1px rgba(0, 30, 255, 0.5), -2.443339761481782px 0 1px rgba(255, 0, 80, 0.3), 0 0 3px; }
+        100% { text-shadow: 1.6208764473832513px 0 1px rgba(0, 30, 255, 0.5), -1.6208764473832513px 0 1px rgba(255, 0, 80, 0.3), 0 0 3px; }
       }
 
       [data-theme="hacker"] ::selection {
-        background: var(--phosphor);
-        color: #000;
+        background: #173e0f;
+        color: var(--bright);
       }
 
       [data-theme="hacker"] a {
@@ -1140,8 +1223,8 @@
       }
 
       [data-theme="hacker"] .plates img {
-        filter: grayscale(1) contrast(1.1) brightness(0.85) sepia(1)
-          hue-rotate(70deg) saturate(2.2);
+        filter: grayscale(1) contrast(1.1) brightness(0.7) sepia(1)
+          hue-rotate(70deg) saturate(1.6);
       }
 
       [data-theme="hacker"] .plates figcaption {
@@ -1196,20 +1279,54 @@
         outline-offset: 3px;
       }
 
+      /* the blog's "stabilize" link: pauses the flicker and the aberration */
+      .stabilize {
+        display: none;
+        appearance: none;
+        background: none;
+        border: 0;
+        padding: 0;
+        font: inherit;
+        color: var(--dim);
+        cursor: pointer;
+        letter-spacing: inherit;
+        text-transform: inherit;
+      }
+
+      [data-theme="hacker"] .stabilize {
+        display: inline;
+      }
+
+      .stabilize:hover {
+        color: var(--phosphor);
+      }
+
+      .stabilize:focus-visible {
+        outline: 2px solid var(--red);
+        outline-offset: 3px;
+      }
+
+      [data-theme="hacker"] .theme-toggle {
+        margin-left: 0;
+      }
+
+      [data-theme="hacker"] .stabilize {
+        margin-left: auto;
+      }
+
       /* ---- boot sequence overlay */
       #boot {
         position: fixed;
         inset: 0;
         z-index: 50;
         background: #000;
-        color: #5bf26b;
-        font-family: "JetBrains Mono", ui-monospace, monospace;
+        color: var(--phosphor, #38a824);
+        font-family: var(--mono);
         font-size: clamp(12px, 1.6vw, 15px);
         line-height: 1.6;
         padding: clamp(16px, 4vw, 48px);
         white-space: pre-wrap;
         cursor: pointer;
-        text-shadow: 0 0 6px rgba(91, 242, 107, 0.55);
       }
 
       #boot[hidden] {
@@ -1217,15 +1334,23 @@
       }
 
       #boot .ok {
-        color: #b9ffc2;
+        color: var(--bright, #6fd650);
       }
 
       #boot .skip {
         position: absolute;
         right: clamp(16px, 4vw, 48px);
         bottom: clamp(16px, 4vw, 48px);
-        color: #1f7a2e;
+        color: var(--dim, #1f6a14);
         font-size: 0.8em;
+      }
+
+      /* the paper plate reserves room for a cropped photo; the terminal
+         portrait sets its own height, so no black slab under it */
+      @media (max-width: 720px) {
+        [data-theme="hacker"] .doorway-plate {
+          min-height: 0;
+        }
       }
 
       @media (max-width: 560px) {
@@ -1244,6 +1369,19 @@
 
         [data-theme="hacker"] .cursor::after {
           animation: none;
+        }
+
+        /* no flicker, no aberration; keep a still glow and drop the control */
+        [data-theme="hacker"] body {
+          text-shadow: 0 0 3px;
+        }
+
+        [data-theme="hacker"] body::after {
+          display: none;
+        }
+
+        [data-theme="hacker"] .stabilize {
+          display: none;
         }
 
         .tab {
@@ -1279,6 +1417,9 @@
         <span>Brooklyn, NY</span>
         <span>Together since 2022</span>
         <span class="red">Friday, July 9, 2027</span>
+        <button class="stabilize" id="stabilize" type="button" aria-pressed="false">
+          <span class="hack">[ stabilize ]</span>
+        </button>
         <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false">
           <span class="paper">[ Hacker mode ]</span><span class="hack">theme --set paper</span>
         </button>
@@ -1958,6 +2099,37 @@
         const toggle = document.getElementById("theme-toggle");
         const reduced = matchMedia("(prefers-reduced-motion: reduce)");
 
+        // The blog's CRT clock (index.js): every second re-roll how long one
+        // aberration loop takes, and shorten it the longer the visitor has
+        // been here, so the picture gets jumpier over time. "stabilize"
+        // pauses the loop and resets the clock.
+        const stabilize = document.getElementById("stabilize");
+        let crtTimer = 0, crtSince = Date.now();
+        const rollCrt = () => {
+          const d = (Math.random() + 1.5) / Math.max(((Date.now() - crtSince) / 100000) * 2, 1);
+          root.style.setProperty("--animation-time", d.toFixed(3) + "s");
+        };
+        function startCrt() {
+          if (reduced.matches || crtTimer) return;
+          crtSince = Date.now();
+          rollCrt();
+          crtTimer = setInterval(rollCrt, 1000);
+        }
+        function stopCrt() {
+          clearInterval(crtTimer);
+          crtTimer = 0;
+          root.style.removeProperty("--animation-time");
+        }
+        function setStable(on) {
+          root.classList.toggle("is-stable", on);
+          stabilize.setAttribute("aria-pressed", String(on));
+          stabilize.firstElementChild.textContent = on ? "[ destabilize ]" : "[ stabilize ]";
+          if (on) stopCrt();
+          else if (root.dataset.theme === "hacker") startCrt();
+        }
+        stabilize.addEventListener("click", () => setStable(!root.classList.contains("is-stable")));
+        window.__stabilize = setStable;
+
         function tuneArt(theme) {
           document.querySelectorAll("ascii-art[data-paper], ascii-art[data-hack]").forEach((el) => {
             const paper = JSON.parse(el.dataset.paper || "{}");
@@ -1980,6 +2152,7 @@
           }
           toggle.setAttribute("aria-pressed", String(theme === "hacker"));
           tuneArt(theme);
+          if (theme === "hacker") { if (!root.classList.contains("is-stable")) startCrt(); } else stopCrt();
           if (theme === "hacker" && was !== "hacker") window.__boot && window.__boot();
         }
 
@@ -1996,6 +2169,7 @@
         // first pass: tune art to whatever the head script decided, boot if hacker
         toggle.setAttribute("aria-pressed", String(root.dataset.theme === "hacker"));
         tuneArt(root.dataset.theme);
+        if (root.dataset.theme === "hacker") startCrt();
         if (root.dataset.theme === "hacker" && !reduced.matches) {
           let booted = false;
           try { booted = sessionStorage.getItem("wedding-booted") === "1"; } catch (e) {}
@@ -2097,7 +2271,7 @@
           out.textContent = msg;
           out.classList.toggle("is-err", err);
         };
-        const HELP = "sections: " + keys.join("  ") + "   (or 1-4)   ·   theme: paper | hacker   ·   ls, clear, exit";
+        const HELP = "sections: " + keys.join("  ") + "   (or 1-4)   ·   theme: paper | hacker   ·   stabilize, ls, clear, exit";
 
         form.addEventListener("submit", (e) => {
           e.preventDefault();
@@ -2115,6 +2289,8 @@
             case "paper": case "light": case "day-mode": say("switching to paper"); window.__setTheme("paper"); break;
             case "hacker": case "dark": say("already here"); break;
             case "theme": say(args[0] === "--set" && (args[1] === "paper" || args[1] === "hacker") ? (window.__setTheme(args[1]), "theme set") : "usage: theme --set paper|hacker"); break;
+            case "stabilize": window.__stabilize(true); say("picture stabilized"); break;
+            case "destabilize": case "unstabilize": window.__stabilize(false); say("picture destabilized"); break;
             case "whoami": say("guest"); break;
             case "date": say("fri jul 9 2027, the friday. clear the evening."); break;
             case "rsvp": say("rsvp: status=closed. you will hear from us. a lot."); break;
