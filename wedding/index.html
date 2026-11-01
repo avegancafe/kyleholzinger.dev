@@ -39,6 +39,8 @@
       defer
     ></script>
 
+    <script type="module" src="/assets/ascii/runtime/ascii.js"></script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -283,112 +285,13 @@
         display: none;
       }
 
-      /* sits on the text line in place of the glyph, optically centred rather
-         than baseline-aligned */
+      /* a small beating heart sits on the text line in place of the glyph */
       .mark.is-live .mark-anim {
-        display: inline-grid;
+        display: inline-block;
         vertical-align: middle;
-        /* transform is spoken for by egg-spin, so nudge with position */
         position: relative;
-        top: -1px;
-        width: 1.4em;
-        height: 1.4em;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12%;
-        animation: egg-spin 5s 0.1s infinite
-          cubic-bezier(1, 0.015, 0.295, 1.225);
-      }
-
-      .mark-anim i {
-        background: var(--cyan-wash);
-        animation: egg-morph 5s 0.1s infinite
-          cubic-bezier(1, 0.015, 0.295, 1.225);
-      }
-
-      .mark-anim i:nth-child(2) {
-        animation-delay: -0.2s;
-      }
-
-      .mark-anim i:nth-child(3) {
-        animation-delay: -0.4s;
-      }
-
-      .mark-anim i:nth-child(4) {
-        animation-delay: -0.6s;
-      }
-
-      @keyframes egg-morph {
-        0% {
-          border-radius: 0;
-          background: var(--cyan-wash);
-          transform: rotate(0deg);
-        }
-        12.5% {
-          border-radius: 50% 0 0 0;
-          transform: rotate(45deg);
-        }
-        25% {
-          border-radius: 50% 50% 0 0;
-          background: var(--cyan-mid);
-          transform: rotate(90deg);
-        }
-        37.5% {
-          border-radius: 50% 50% 50% 0;
-          transform: rotate(135deg);
-        }
-        50% {
-          border-radius: 50%;
-          background: var(--cyan);
-          transform: rotate(180deg);
-        }
-        62.5% {
-          border-radius: 0 50% 50% 50%;
-          transform: rotate(225deg);
-        }
-        75% {
-          border-radius: 0 0 50% 50%;
-          background: var(--cyan-mid);
-          transform: rotate(270deg);
-        }
-        87.5% {
-          border-radius: 0 0 0 50%;
-          transform: rotate(315deg);
-        }
-        100% {
-          border-radius: 0;
-          background: var(--cyan-wash);
-          transform: rotate(360deg);
-        }
-      }
-
-      @keyframes egg-spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        12.5% {
-          transform: rotate(45deg);
-        }
-        25% {
-          transform: rotate(90deg);
-        }
-        37.5% {
-          transform: rotate(135deg);
-        }
-        50% {
-          transform: rotate(180deg);
-        }
-        62.5% {
-          transform: rotate(225deg);
-        }
-        75% {
-          transform: rotate(270deg);
-        }
-        87.5% {
-          transform: rotate(315deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
+        top: -2px;
+        --ascii-ink: var(--red);
       }
 
       /* ---------- doorway ---------- */
@@ -415,16 +318,26 @@
         overflow: hidden;
       }
 
-      /* absolute so the photo's intrinsic height can't stretch the row —
-         otherwise the box matches the source ratio and cover never crops */
-      .doorway-plate img {
+      /* the portrait is an animated cyanotype now: a halftone of the photo
+         drawn in Prussian blue on the paper. Without JS the photo itself
+         shows, from the <noscript> below it. */
+      .doorway-plate ascii-art,
+      .doorway-plate noscript img {
+        display: block;
+        width: 100%;
+      }
+
+      .doorway-plate ascii-art {
+        --ascii-ink: var(--cyan);
+        background: var(--cyan-wash);
+      }
+
+      .doorway-plate noscript img {
         position: absolute;
         inset: 0;
-        width: 100%;
         height: 100%;
         object-fit: cover;
         object-position: center bottom;
-        display: block;
       }
 
       .doorway-hail {
@@ -652,6 +565,64 @@
         color: var(--cyan);
       }
 
+      /* ---------- ascii art ---------- */
+
+      /* every piece sits in the same framed compartment the facts use */
+      .art {
+        margin: 0 0 40px;
+        border: 2px solid var(--ink);
+        background: var(--paper);
+        --ascii-ink: var(--cyan);
+      }
+
+      .art ascii-art {
+        display: block;
+        width: 100%;
+        margin: 0 auto;
+        background: var(--paper);
+      }
+
+      .art figcaption {
+        padding: 12px 16px;
+        border-top: 2px solid var(--ink);
+        color: var(--cyan);
+      }
+
+      /* the names, letter by letter, under the masthead */
+      .lettering {
+        margin: clamp(24px, 4vw, 40px) 0 0;
+        max-width: 720px;
+        --ascii-ink: var(--cyan);
+      }
+
+      .lettering ascii-art {
+        display: block;
+        width: 100%;
+      }
+
+      /* animated rules in place of the plain hairlines */
+      .art-rule {
+        padding: 6px var(--gutter);
+        --ascii-ink: var(--cyan);
+        border-top: 2px solid var(--ink);
+        border-bottom: 2px solid var(--ink);
+        overflow: hidden;
+      }
+
+      .art-rule ascii-art,
+      .band ascii-art {
+        display: block;
+        margin: 0 auto;
+      }
+
+      /* the pets, drawn small inside their roster cells */
+      .roster ascii-art {
+        display: block;
+        width: 100%;
+        margin-top: 14px;
+        --ascii-ink: var(--cyan);
+      }
+
       .pos-mid {
         object-position: center 58%;
       }
@@ -676,10 +647,14 @@
       /* two parallel rules with an 8px gap. box-sizing is border-box, so the
          height has to carry both 2px rules plus the gap. */
       .band {
-        height: 12px;
         border-top: 2px solid var(--cyan);
         border-bottom: 2px solid var(--cyan);
+        padding: 4px var(--gutter);
+        --ascii-ink: var(--cyan);
+        overflow: hidden;
       }
+
+
 
       footer {
         padding: clamp(48px, 7vw, 80px) var(--gutter) clamp(64px, 9vw, 104px);
@@ -794,7 +769,7 @@
           >
             <span class="mark-glyph">&reg;</span
             ><span class="mark-anim" aria-hidden="true"
-              ><i></i><i></i><i></i><i></i></span
+              ><ascii-art piece="heart-3d" mono size="1.6" still></ascii-art></span
             ></button
           ></span
         >
@@ -805,10 +780,18 @@
 
       <a class="doorway" href="#invitation">
         <div class="doorway-plate">
-          <img
-            src="/assets/wedding/hello-there.jpg"
-            alt="Kyle and Elise leaning close to the camera in sunglasses under a pressed-tin ceiling"
-          />
+          <ascii-art
+            piece="kyle-elise-hello"
+            data-cols="120"
+            data-max="18"
+            aria-label="Kyle and Elise leaning close to the camera in sunglasses under a pressed-tin ceiling, as an animated cyanotype"
+          ></ascii-art>
+          <noscript>
+            <img
+              src="/assets/wedding/hello-there.jpg"
+              alt="Kyle and Elise leaning close to the camera in sunglasses under a pressed-tin ceiling"
+            />
+          </noscript>
         </div>
         <div class="doorway-hail">
           <p class="macro">Oh hello <em>there</em></p>
@@ -820,6 +803,14 @@
     <main id="invitation">
       <header class="masthead">
         <h1 class="macro">Kyle<span class="amp">&amp;</span><br />Elise</h1>
+        <div class="lettering">
+          <ascii-art
+            piece="kyle-and-elise"
+            data-cols="71"
+            data-max="12"
+            aria-hidden="true"
+          ></ascii-art>
+        </div>
         <p class="lede">
           are getting married. You almost certainly know this already — word
           of mouth has been running well ahead of the invitations.
@@ -891,6 +882,17 @@
       >
       <section class="bay">
         <h2>Where things stand</h2>
+        <figure class="art">
+          <ascii-art
+            piece="east-river-bridge-sunrise"
+            look="dots"
+            mono
+            data-cols="192"
+            data-max="12"
+            aria-label="Greenpoint, from the river, animated ASCII art"
+          ></ascii-art>
+          <figcaption class="telemetry">Greenpoint, from the river</figcaption>
+        </figure>
 
         <!-- The scanned cyanotype goes here. Save it as
              /assets/wedding/cyanotype.jpg and uncomment this block; the
@@ -957,6 +959,17 @@
       >
       <section class="bay">
         <h2>The next day</h2>
+        <figure class="art">
+          <ascii-art
+            piece="walking-dog"
+            look="dots"
+            mono
+            data-cols="96"
+            data-max="12"
+            aria-label="The park, Saturday, animated ASCII art"
+          ></ascii-art>
+          <figcaption class="telemetry">The park, Saturday</figcaption>
+        </figure>
         <p class="prose">
           We are doing a picnic in the park on the Saturday. No structure, no
           speeches, no obligation — come if you are still in town and feel like
@@ -1003,6 +1016,17 @@
       >
       <section class="bay">
         <h2>Getting there</h2>
+        <figure class="art">
+          <ascii-art
+            piece="liberty-harbor-dawn"
+            look="dots"
+            mono
+            data-cols="192"
+            data-max="12"
+            aria-label="The harbour, on approach, animated ASCII art"
+          ></ascii-art>
+          <figcaption class="telemetry">The harbour, on approach</figcaption>
+        </figure>
         <p class="prose">
           Greenpoint is the top of Brooklyn, across the river from midtown. It
           is easier to reach than people expect and harder to leave than people
@@ -1037,10 +1061,22 @@
         </dl>
       </section>
 
-      <hr class="rule" />
+      <div class="art-rule" role="presentation">
+        <ascii-art piece="dotted-rule" mono data-cols="90" data-max="14" aria-hidden="true"></ascii-art>
+      </div>
 
       <section class="bay">
         <h2>Where to stay</h2>
+        <figure class="art">
+          <ascii-art
+            piece="nyc-skyline-night"
+            mono
+            data-cols="104"
+            data-max="12"
+            aria-label="Across the river, after dark, animated ASCII art"
+          ></ascii-art>
+          <figcaption class="telemetry">Across the river, after dark</figcaption>
+        </figure>
         <p class="prose">
           Everything below is in Greenpoint or Williamsburg, walking distance to
           both the dinner and the park.
@@ -1122,11 +1158,27 @@
             <dt>Leo</dt>
             <span class="tag telemetry">Cat</span>
             <dd>Black, silent, fundamentally unknowable.</dd>
+            <ascii-art
+              piece="sleeping-cat"
+              look="dots"
+              mono
+              data-cols="80"
+              data-max="6"
+              aria-label="A cat asleep, animated ASCII art"
+            ></ascii-art>
           </div>
           <div>
             <dt>Sierra</dt>
             <span class="tag telemetry">Dog</span>
             <dd>Mischievous demon. Here for treats and a good time.</dd>
+            <ascii-art
+              piece="wagging-pup"
+              look="dots"
+              mono
+              data-cols="60"
+              data-max="6"
+              aria-label="A puppy wagging its tail, animated ASCII art"
+            ></ascii-art>
           </div>
         </dl>
 
@@ -1172,7 +1224,9 @@
         </ul>
       </section>
 
-      <hr class="rule" />
+      <div class="art-rule" role="presentation">
+        <ascii-art piece="dotted-rule" mono data-cols="90" data-max="14" aria-hidden="true"></ascii-art>
+      </div>
 
       <section class="bay">
         <h2>Enjoy these pictures of us being cute</h2>
@@ -1249,7 +1303,9 @@
       </div>
     </main>
 
-    <div class="band" role="presentation"></div>
+    <div class="band" role="presentation">
+      <ascii-art piece="wave-divider" mono data-cols="96" data-max="14" aria-hidden="true"></ascii-art>
+    </div>
 
     <footer>
       <h2>Questions</h2>
@@ -1265,8 +1321,8 @@
 
       <div class="signoff telemetry">
         <a href="/">kyleholzinger.dev</a>
-        <span>Rev 03</span>
-        <span class="red">Updated Sept 2026</span>
+        <span>Rev 04</span>
+        <span class="red">Updated Nov 2026</span>
       </div>
     </footer>
     <script>
@@ -1335,15 +1391,43 @@
     </script>
 
     <script>
-      // Easter egg: a square-to-circle loop Kyle wrote years ago, recoloured
-      // to the cyanotype palette. Click the ® to swap it for the animation.
+      // Every piece has a fixed number of columns, so its width is
+      // cols × cell × font-size. Size each one from the box it sits in; the
+      // runtime only crops otherwise. A cell is 0.602 of the font size wide.
+      (function () {
+        const fit = (el) => {
+          const w = el.parentElement.clientWidth;
+          if (!w) return;
+          const cols = +el.dataset.cols || 96;
+          const size = Math.min(+el.dataset.max || 14, w / cols / 0.602);
+          el.setAttribute("size", Math.max(2, size).toFixed(2));
+        };
+        const els = [...document.querySelectorAll("ascii-art[data-cols]")];
+        const ro = new ResizeObserver((entries) => {
+          for (const e of entries)
+            for (const el of els) if (el.parentElement === e.target) fit(el);
+        });
+        els.forEach((el) => {
+          fit(el);
+          ro.observe(el.parentElement);
+        });
+      })();
+    </script>
+
+    <script>
+      // Easter egg: click the ® and it becomes a small beating heart, drawn
+      // in the same characters as everything else. The heart holds a still
+      // frame until it is shown, then plays.
       (function () {
         const mark = document.getElementById("mark");
         if (!mark) return;
+        const heart = mark.querySelector("ascii-art");
 
-        mark.addEventListener("click", () =>
-          mark.classList.toggle("is-live")
-        );
+        mark.addEventListener("click", () => {
+          const live = mark.classList.toggle("is-live");
+          if (live) heart.removeAttribute("still");
+          else heart.setAttribute("still", "");
+        });
       })();
     </script>
   </body>
