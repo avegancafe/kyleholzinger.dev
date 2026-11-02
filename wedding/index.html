@@ -40,16 +40,11 @@
     ></script>
 
     <script>
-      // Theme, decided before anything paints: ?theme= in the URL, then the
-      // visitor's saved choice, then the OS colour scheme (dark = hacker).
+      // Theme, decided before anything paints: paper, unless the URL says
+      // ?theme=hacker. Nothing is remembered and the OS setting is ignored.
       (function () {
         const q = new URLSearchParams(location.search).get("theme");
-        let saved = null;
-        try { saved = localStorage.getItem("wedding-theme"); } catch (e) {}
-        const os = matchMedia("(prefers-color-scheme: dark)").matches ? "hacker" : "paper";
-        const pick = (v) => (v === "hacker" || v === "paper" ? v : null);
-        document.documentElement.dataset.theme = pick(q) || pick(saved) || os;
-        document.documentElement.dataset.themeSource = pick(q) ? "url" : pick(saved) ? "saved" : "os";
+        document.documentElement.dataset.theme = q === "hacker" ? "hacker" : "paper";
       })();
     </script>
     <script type="module" src="/assets/ascii/runtime/ascii.js"></script>
@@ -2480,7 +2475,7 @@
     <script>
       // Theme switch. The <html data-theme> was set before paint (head); this
       // owns changing it: the prompt's `paper`/`hacker` commands (undocumented),
-      // following the OS while the visitor hasn't chosen, and re-tuning every
+      // and re-tuning every
       // piece from its data-paper / data-hack attribute sets.
       (function () {
         const root = document.documentElement;
@@ -2531,27 +2526,17 @@
           window.__fitArt && window.__fitArt();
         }
 
-        function apply(theme, { save = false } = {}) {
+        function apply(theme) {
           const was = root.dataset.theme;
           root.dataset.theme = theme;
-          if (save) {
-            root.dataset.themeSource = "saved";
-            try { localStorage.setItem("wedding-theme", theme); } catch (e) {}
-          }
           tuneArt(theme);
           if (theme === "hacker") { if (!root.classList.contains("is-stable")) startCrt(); } else stopCrt();
           if (theme === "hacker" && was !== "hacker") window.__boot && window.__boot();
         }
 
-        // The OS switch always wins: flipping light/dark mode flips the site,
-        // and forgets any earlier manual choice so later loads follow the OS too.
-        matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
-          try { localStorage.removeItem("wedding-theme"); } catch (err) {}
-          root.dataset.themeSource = "os";
-          apply(e.matches ? "hacker" : "paper");
-        });
-
-        window.__setTheme = (t) => apply(t, { save: true });
+        // the prompt's paper/hacker commands switch this page only; a reload
+        // without ?theme= is paper again
+        window.__setTheme = apply;
         // first pass: tune art to whatever the head script decided, boot if hacker
         tuneArt(root.dataset.theme);
         if (root.dataset.theme === "hacker") startCrt();
