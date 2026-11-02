@@ -229,6 +229,40 @@
         padding-inline: var(--margin);
       }
 
+      /* a small half-filled disc at the right end of the strip switches the
+         theme. It is deliberately quiet: no label, just the mark. */
+      .theme-toggle {
+        margin-left: auto;
+        align-self: center;
+        appearance: none;
+        background: none;
+        border: 0;
+        padding: 6px;
+        margin-block: -6px;
+        color: inherit;
+        cursor: pointer;
+        line-height: 0;
+      }
+
+      .theme-toggle-dot {
+        display: block;
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        border: 1px solid currentColor;
+        background: linear-gradient(90deg, currentColor 50%, transparent 50%);
+        transition: color 0.2s ease;
+      }
+
+      .theme-toggle:hover {
+        color: var(--ink);
+      }
+
+      .theme-toggle:focus-visible {
+        outline: 1px solid var(--ink);
+        outline-offset: 3px;
+      }
+
       .strip .red {
         color: var(--ink);
       }
@@ -1693,6 +1727,23 @@
         margin-left: auto;
       }
 
+      [data-theme="hacker"] .theme-toggle {
+        margin-left: 0;
+      }
+
+      [data-theme="hacker"] .theme-toggle-dot {
+        /* the other half filled: this side is the dark one */
+        background: linear-gradient(270deg, currentColor 50%, transparent 50%);
+      }
+
+      [data-theme="hacker"] .theme-toggle:hover {
+        color: var(--phosphor);
+      }
+
+      [data-theme="hacker"] .theme-toggle:focus-visible {
+        outline-color: var(--red);
+      }
+
       /* ---- boot sequence overlay */
       #boot {
         position: fixed;
@@ -1801,6 +1852,9 @@
         <span class="red">Friday, July 9, 2027</span>
         <button class="stabilize" id="stabilize" type="button" aria-pressed="false">
           <span class="hack">[ stabilize ]</span>
+        </button>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch theme" aria-pressed="false">
+          <span class="theme-toggle-dot" aria-hidden="true"></span>
         </button>
       </div>
 
@@ -2529,14 +2583,23 @@
         function apply(theme) {
           const was = root.dataset.theme;
           root.dataset.theme = theme;
+          // the URL is the one place the choice lives: ?theme=hacker or nothing
+          const url = new URL(location.href);
+          if (theme === "hacker") url.searchParams.set("theme", "hacker"); else url.searchParams.delete("theme");
+          history.replaceState(null, "", url);
+          toggle.setAttribute("aria-pressed", String(theme === "hacker"));
           tuneArt(theme);
           if (theme === "hacker") { if (!root.classList.contains("is-stable")) startCrt(); } else stopCrt();
           if (theme === "hacker" && was !== "hacker") window.__boot && window.__boot();
         }
 
-        // the prompt's paper/hacker commands switch this page only; a reload
-        // without ?theme= is paper again
+        // the prompt's paper/hacker commands and the small disc in the strip
+        // switch the page and rewrite ?theme=, so a reload or a shared link
+        // keeps the choice
         window.__setTheme = apply;
+        const toggle = document.getElementById("theme-toggle");
+        toggle.addEventListener("click", () => apply(root.dataset.theme === "hacker" ? "paper" : "hacker"));
+        toggle.setAttribute("aria-pressed", String(root.dataset.theme === "hacker"));
         // first pass: tune art to whatever the head script decided, boot if hacker
         tuneArt(root.dataset.theme);
         if (root.dataset.theme === "hacker") startCrt();
