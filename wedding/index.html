@@ -238,23 +238,6 @@
         color: var(--ink);
       }
 
-      /* the theme switch's own rules live with hacker mode's below */
-      :where(:root:not([data-theme="hacker"])) .strip .theme-toggle {
-        color: var(--ink-3);
-        transition: color 0.2s ease;
-      }
-
-      :where(:root:not([data-theme="hacker"])) .strip .theme-toggle:hover {
-        color: var(--ink);
-        text-decoration-thickness: var(--hw);
-        text-underline-offset: 0.45em;
-      }
-
-      :where(:root:not([data-theme="hacker"])) .strip .theme-toggle:focus-visible {
-        outline: 1px solid var(--ink);
-        outline-offset: 5px;
-      }
-
       .bay {
         padding-inline: var(--gutter);
       }
@@ -1684,30 +1667,6 @@
         color: var(--phosphor);
       }
 
-      /* ---- the theme switch, in the strip */
-      .theme-toggle {
-        margin-left: auto;
-        appearance: none;
-        background: none;
-        border: 0;
-        padding: 0;
-        font: inherit;
-        color: var(--red);
-        cursor: pointer;
-        letter-spacing: inherit;
-        text-transform: inherit;
-      }
-
-      .theme-toggle:hover {
-        text-decoration: underline;
-        text-underline-offset: 3px;
-      }
-
-      .theme-toggle:focus-visible {
-        outline: 2px solid var(--red);
-        outline-offset: 3px;
-      }
-
       /* the blog's "stabilize" link: pauses the flicker and the aberration */
       .stabilize {
         display: none;
@@ -1733,10 +1692,6 @@
       .stabilize:focus-visible {
         outline: 2px solid var(--red);
         outline-offset: 3px;
-      }
-
-      [data-theme="hacker"] .theme-toggle {
-        margin-left: 0;
       }
 
       [data-theme="hacker"] .stabilize {
@@ -1851,9 +1806,6 @@
         <span class="red">Friday, July 9, 2027</span>
         <button class="stabilize" id="stabilize" type="button" aria-pressed="false">
           <span class="hack">[ stabilize ]</span>
-        </button>
-        <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false">
-          <span class="paper">Hacker mode</span><span class="hack">theme --set paper</span>
         </button>
       </div>
 
@@ -2527,13 +2479,12 @@
 
     <script>
       // Theme switch. The <html data-theme> was set before paint (head); this
-      // owns changing it: the toggle, the prompt's `paper`/`hacker` commands,
+      // owns changing it: the prompt's `paper`/`hacker` commands (undocumented),
       // following the OS while the visitor hasn't chosen, and re-tuning every
       // piece from its data-paper / data-hack attribute sets.
       (function () {
         const root = document.documentElement;
         const ART_ATTRS = ["piece", "look", "mono", "contrast", "chars", "all", "still", "data-cols", "data-max"];
-        const toggle = document.getElementById("theme-toggle");
         const reduced = matchMedia("(prefers-reduced-motion: reduce)");
 
         // The blog's CRT clock (index.js): every second re-roll how long one
@@ -2587,15 +2538,10 @@
             root.dataset.themeSource = "saved";
             try { localStorage.setItem("wedding-theme", theme); } catch (e) {}
           }
-          toggle.setAttribute("aria-pressed", String(theme === "hacker"));
           tuneArt(theme);
           if (theme === "hacker") { if (!root.classList.contains("is-stable")) startCrt(); } else stopCrt();
           if (theme === "hacker" && was !== "hacker") window.__boot && window.__boot();
         }
-
-        toggle.addEventListener("click", () =>
-          apply(root.dataset.theme === "hacker" ? "paper" : "hacker", { save: true })
-        );
 
         // The OS switch always wins: flipping light/dark mode flips the site,
         // and forgets any earlier manual choice so later loads follow the OS too.
@@ -2607,7 +2553,6 @@
 
         window.__setTheme = (t) => apply(t, { save: true });
         // first pass: tune art to whatever the head script decided, boot if hacker
-        toggle.setAttribute("aria-pressed", String(root.dataset.theme === "hacker"));
         tuneArt(root.dataset.theme);
         if (root.dataset.theme === "hacker") startCrt();
         if (root.dataset.theme === "hacker" && !reduced.matches) {
@@ -2711,7 +2656,7 @@
           out.textContent = msg;
           out.classList.toggle("is-err", err);
         };
-        const HELP = "sections: " + keys.join("  ") + "   (or 1-4)   ·   theme: paper | hacker   ·   stabilize, ls, clear, exit";
+        const HELP = "sections: " + keys.join("  ") + "   (or 1-4)   ·   stabilize, ls, clear, exit";
 
         form.addEventListener("submit", (e) => {
           e.preventDefault();
