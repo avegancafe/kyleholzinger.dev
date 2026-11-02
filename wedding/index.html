@@ -58,7 +58,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Archivo+Black&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
 
@@ -72,23 +72,47 @@
         font-display: swap;
       }
 
-      :root {
-        --paper: #f4f4f0;
-        --substrate: #eae8e3;
-        --ink: #111111;
-        --red: #e61919;
-        /* cyanotype: Prussian blue shadow, washed paper highlight. Matches the
-           scanned graphic going on the paper invites. */
-        --cyan: #0d2b52;
-        --cyan-mid: #3f6f9c;
-        --cyan-wash: #dbe4ef;
+      /* =====================================================================
+         PAPER, the default: ink on white, hairline rules, a light Garamond
+         for display, EB Garamond to read, tracked capitals for labels, and
+         the ASCII pieces printed in one ink like stipple engravings.
 
-        --macro: "Archivo Black", "Archivo", system-ui, sans-serif;
-        --body: "Archivo", system-ui, sans-serif;
+         Hacker mode, further down, is written as deltas on these un-prefixed
+         rules, so anything it doesn't override is part of its look too.
+         Those declarations keep their old values. Where paper wants
+         something else it says so in a rule scoped to
+         :where(:root:not([data-theme="hacker"])), which never matches in
+         hacker mode and adds no specificity.
+         ===================================================================== */
+
+      :root {
+        color-scheme: light;
+
+        --paper: #fcfbf8;
+        /* the one recessed surface (the hotel note) */
+        --substrate: #f3f1ec;
+        --ink: #161616;
+        --ink-2: #4b4945;
+        --ink-3: #85827b;
+        /* rules that frame, and rules that only divide */
+        --hair: #161616;
+        --hair-2: #d8d5ce;
+        /* a hairline is one device pixel: 1px here, half that on retina */
+        --hw: 1px;
+
+        --display: "Cormorant Garamond", "EB Garamond", Garamond, "Times New Roman", serif;
+        --body: "EB Garamond", Garamond, "Times New Roman", serif;
         --mono: "JetBrains Mono", ui-monospace, monospace;
 
         --gutter: clamp(16px, 4vw, 48px);
+        /* paper's content column: the gutter, growing to centre 1180px */
+        --margin: max(var(--gutter), (100% - 1180px) / 2);
+      }
 
+      @media (min-resolution: 2dppx) {
+        :root {
+          --hw: 0.5px;
+        }
       }
 
       *,
@@ -114,20 +138,31 @@
         background: var(--paper);
         color: var(--ink);
         font-family: var(--body);
-        font-size: 17px;
-        line-height: 1.55;
+        font-size: clamp(17.5px, 16px + 0.25vw, 19px);
+        line-height: 1.6;
         -webkit-font-smoothing: antialiased;
       }
 
-      /* mechanical noise — keeps flat vectors from reading as sterile */
+      :where(:root:not([data-theme="hacker"])) body {
+        font-variant-numeric: oldstyle-nums;
+      }
+
+      /* hacker mode's flicker layer hangs off this; paper draws nothing */
       body::after {
         content: "";
         position: fixed;
         inset: 0;
         z-index: 10;
         pointer-events: none;
-        opacity: 0.035;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+      }
+
+      :where(:root:not([data-theme="hacker"])) body::after {
+        content: none;
+      }
+
+      ::selection {
+        background: var(--ink);
+        color: var(--paper);
       }
 
       a {
@@ -139,23 +174,38 @@
         outline-offset: 3px;
       }
 
+      :where(:root:not([data-theme="hacker"])) a {
+        text-decoration-thickness: var(--hw);
+        text-underline-offset: 0.22em;
+      }
+
+      /* one quiet focus ring; the doorway fills the screen, so its ring
+         sits inside it */
+      :where(:root:not([data-theme="hacker"])) a:focus-visible {
+        outline: 1px solid var(--ink);
+        outline-offset: 5px;
+      }
+
+      :where(:root:not([data-theme="hacker"])) .doorway:focus-visible {
+        outline-offset: -10px;
+      }
+
       /* ---------- type ---------- */
 
       .macro {
-        font-family: var(--macro);
-        font-weight: 400;
-        text-transform: uppercase;
-        letter-spacing: -0.04em;
-        line-height: 0.86;
+        font-family: var(--display);
+        font-weight: 300;
+        letter-spacing: -0.01em;
+        line-height: 0.95;
         margin: 0;
         text-wrap: balance;
       }
 
       .telemetry {
-        font-family: var(--mono);
+        font-family: var(--body);
         font-size: 0.75rem;
         font-weight: 500;
-        letter-spacing: 0.09em;
+        letter-spacing: 0.16em;
         text-transform: uppercase;
         font-variant-numeric: tabular-nums;
       }
@@ -165,13 +215,7 @@
       }
 
       .prose {
-        max-width: 60ch;
-      }
-
-      .rule {
-        border: 0;
-        border-top: 2px solid var(--ink);
-        margin: 0;
+        max-width: 33em;
       }
 
       /* ---------- structural frame ---------- */
@@ -180,16 +224,43 @@
         display: flex;
         flex-wrap: wrap;
         gap: 4px 28px;
-        padding: 12px var(--gutter);
-        border-bottom: 2px solid var(--ink);
+        padding: 15px var(--gutter);
+        border-bottom: var(--hw) solid var(--hair);
+        color: var(--ink-2);
+      }
+
+      :where(:root:not([data-theme="hacker"])) .strip {
+        align-items: baseline;
+        padding-inline: var(--margin);
       }
 
       .strip .red {
-        color: var(--red);
+        color: var(--ink);
+      }
+
+      /* the theme switch's own rules live with hacker mode's below */
+      :where(:root:not([data-theme="hacker"])) .strip .theme-toggle {
+        color: var(--ink-3);
+        transition: color 0.2s ease;
+      }
+
+      :where(:root:not([data-theme="hacker"])) .strip .theme-toggle:hover {
+        color: var(--ink);
+        text-decoration-thickness: var(--hw);
+        text-underline-offset: 0.45em;
+      }
+
+      :where(:root:not([data-theme="hacker"])) .strip .theme-toggle:focus-visible {
+        outline: 1px solid var(--ink);
+        outline-offset: 5px;
       }
 
       .bay {
         padding-inline: var(--gutter);
+      }
+
+      :where(:root:not([data-theme="hacker"])) .bay {
+        padding-inline: var(--margin);
       }
 
       .tabbar {
@@ -197,8 +268,8 @@
         top: 0;
         z-index: 9;
         background: var(--paper);
-        border-top: 2px solid var(--ink);
-        border-bottom: 2px solid var(--ink);
+        border-top: var(--hw) solid var(--hair);
+        border-bottom: var(--hw) solid var(--hair);
       }
 
       .tabs {
@@ -211,31 +282,51 @@
         display: none;
       }
 
+      :where(:root:not([data-theme="hacker"])) .tabs {
+        padding-inline: var(--margin);
+      }
+
+      /* labels in the strip's capitals; the selected one is inked and gets a
+         short rule under it, the rest stay grey */
       .tab {
         flex: 1 0 auto;
         appearance: none;
-        /* unselected sit recessed against the paper bar, so the row reads as
-           a set of keys rather than a line of text */
-        background: var(--substrate);
-        color: var(--ink);
+        background: none;
+        color: var(--ink-3);
         border: 0;
-        border-right: 2px solid var(--ink);
-        padding: 15px 22px;
-        font-family: var(--mono);
+        border-right: var(--hw) solid var(--hair-2);
+        /* narrows with the window so all four still fit on one row just
+           above the 2x2 breakpoint */
+        padding: 19px clamp(10px, 2.4vw - 4px, 22px) 18px;
+        font-family: var(--body);
         font-size: 0.75rem;
         font-weight: 500;
-        letter-spacing: 0.09em;
+        letter-spacing: 0.16em;
         text-transform: uppercase;
         white-space: nowrap;
         cursor: pointer;
-        transition: background 0.15s ease, color 0.15s ease;
+        transition: color 0.2s ease;
       }
 
-      /* the page already teaches [ ... ] as "this does something" —
-         [ ENTER ], [ OPEN IN MAPS ]. Reuse that vocabulary here. */
+      :where(:root:not([data-theme="hacker"])) .tab {
+        position: relative;
+      }
+
       .tab-index {
         display: inline-block;
-        color: var(--red);
+        color: var(--ink-3);
+      }
+
+      /* the index as an italic old-style numeral, set like a page number */
+      :where(:root:not([data-theme="hacker"])) .tab-index {
+        margin-right: 0.5em;
+        font-family: var(--display);
+        font-size: 1.4em;
+        font-style: italic;
+        font-weight: 400;
+        letter-spacing: 0;
+        line-height: 0;
+        font-variant-numeric: oldstyle-nums;
       }
 
       .tab-dot {
@@ -244,31 +335,54 @@
         opacity: 0.5;
       }
 
+      :where(:root:not([data-theme="hacker"])) .tab-dot {
+        display: none;
+      }
 
       .tab:last-child {
         border-right: 0;
       }
 
       .tab:hover:not([aria-selected="true"]) {
-        background: var(--paper);
+        background: none;
+        color: var(--ink);
       }
 
       .tab:active {
         transform: translateY(1px);
       }
 
+      :where(:root:not([data-theme="hacker"])) .tab:active {
+        transform: none;
+      }
+
       .tab[aria-selected="true"] {
-        background: var(--ink);
-        color: var(--paper);
+        background: none;
+        color: var(--ink);
       }
 
       .tab[aria-selected="true"] .tab-index {
-        color: var(--paper);
+        color: var(--ink);
+      }
+
+      :where(:root:not([data-theme="hacker"])) .tab[aria-selected="true"]::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: 10px;
+        width: 24px;
+        margin-left: -12px;
+        border-top: 1px solid var(--ink);
       }
 
       .tab:focus-visible {
         outline: 3px solid var(--red);
         outline-offset: -3px;
+      }
+
+      :where(:root:not([data-theme="hacker"])) .tab:focus-visible {
+        outline: 1px solid var(--ink);
+        outline-offset: -7px;
       }
 
       .panel[hidden] {
@@ -277,8 +391,8 @@
 
       /* ---------- easter egg ---------- */
 
-      /* The ® was always a bit of industrial set-dressing; now it does
-         something. Kept as a real button so it is keyboard reachable. */
+      /* The ® after the names in the strip does something. Kept as a real
+         button so it is keyboard reachable. */
       .mark {
         position: relative;
         appearance: none;
@@ -303,8 +417,21 @@
         outline-offset: 2px;
       }
 
+      :where(:root:not([data-theme="hacker"])) .mark:focus-visible {
+        outline: 1px solid var(--ink);
+        outline-offset: 3px;
+      }
+
       .mark-glyph {
         display: inline-block;
+      }
+
+      /* a small superior ®, as it would be set after a name */
+      :where(:root:not([data-theme="hacker"])) .mark-glyph {
+        font-size: 0.85em;
+        letter-spacing: 0;
+        vertical-align: 0.3em;
+        line-height: 0;
       }
 
       .mark-anim {
@@ -324,6 +451,15 @@
         --ascii-ink: var(--red);
       }
 
+      /* the heart is taller than the strip's line: drawn a little smaller,
+         and it doesn't push the strip open */
+      :where(:root:not([data-theme="hacker"])) .mark.is-live .mark-anim {
+        --ascii-ink: var(--ink);
+        top: 2px;
+        margin-block: -19px;
+        transform: scale(0.8);
+      }
+
       /* ---------- doorway ---------- */
 
       .entry {
@@ -338,19 +474,35 @@
         flex: 1 1 auto;
         min-height: 0;
         text-decoration: none;
-        border-bottom: 2px solid var(--ink);
+        border-bottom: var(--hw) solid var(--hair);
       }
 
       .doorway-plate {
         position: relative;
         min-height: 0;
-        border-right: 2px solid var(--ink);
+        border-right: var(--hw) solid var(--hair);
         overflow: hidden;
       }
 
-      /* the portrait is an animated cyanotype now: a halftone of the photo
-         drawn in Prussian blue on the paper. Without JS the photo itself
-         shows, from the <noscript> below it. */
+      /* The portrait is mounted like a print: centred on the page with a
+         wide margin and a hairline plate mark around it. The mat is the
+         portrait's parent so the fit script sizes it to the mat, not the
+         padded plate. */
+      /* an explicit track: an auto one would grow to the portrait, and the
+         fit script would read that back as room to grow (e.g. coming back
+         from hacker mode, where the portrait is wider) */
+      :where(:root:not([data-theme="hacker"])) .doorway-plate {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        place-items: center;
+        padding: clamp(32px, 5.5vw, 80px);
+      }
+
+      :where(:root:not([data-theme="hacker"])) .doorway-mat {
+        width: 100%;
+        max-width: 620px;
+      }
+
       .doorway-plate ascii-art,
       .doorway-plate scroll-art,
       .doorway-plate noscript img {
@@ -360,8 +512,18 @@
 
       .doorway-plate ascii-art,
       .doorway-plate scroll-art {
-        --ascii-ink: var(--cyan);
-        background: var(--cyan-wash);
+        --ascii-ink: var(--ink);
+        background: var(--paper);
+      }
+
+      /* The photo is drawn in bars whose height is the shade, and its four
+         tones carry the faces (one flat ink loses them). Greyscale keeps the
+         tones and drops the blue: an engraving in one ink. */
+      :where(:root:not([data-theme="hacker"])) .doorway-plate scroll-art {
+        background: none;
+        filter: grayscale(1) contrast(1.08);
+        outline: var(--hw) solid var(--hair);
+        outline-offset: clamp(10px, 1.5vw, 18px);
       }
 
       .doorway-plate noscript img {
@@ -380,18 +542,51 @@
           clamp(16px, 3vw, 40px);
       }
 
+      :where(:root:not([data-theme="hacker"])) .doorway-hail {
+        justify-content: center;
+        align-items: flex-start;
+        padding: 48px var(--gutter) 48px clamp(28px, 4.5vw, 64px);
+      }
+
       .doorway-hail .macro {
-        font-size: clamp(2.6rem, 8.5vw, 7rem);
+        font-size: clamp(3.4rem, 7.2vw, 6.75rem);
       }
 
       .doorway-hail .macro em {
         font-style: normal;
-        color: var(--red);
+        color: var(--ink);
+      }
+
+      :where(:root:not([data-theme="hacker"])) .doorway-hail .macro em {
+        font-style: italic;
       }
 
       .enter {
         margin-top: 28px;
-        color: var(--red);
+        color: var(--ink-2);
+      }
+
+      /* "Enter", then a hairline that reaches further on hover */
+      :where(:root:not([data-theme="hacker"])) .enter {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-top: 40px;
+      }
+
+      :where(:root:not([data-theme="hacker"])) .enter::after {
+        content: "";
+        width: 48px;
+        border-top: var(--hw) solid currentColor;
+        transition: width 0.4s ease;
+      }
+
+      :where(:root:not([data-theme="hacker"])) .doorway:hover .enter {
+        color: var(--ink);
+      }
+
+      :where(:root:not([data-theme="hacker"])) .doorway:hover .enter::after {
+        width: 96px;
       }
 
       /* ---------- masthead ---------- */
@@ -400,13 +595,36 @@
         padding: clamp(48px, 8vw, 96px) var(--gutter) clamp(40px, 6vw, 72px);
       }
 
+      /* the title page: the names stacked and centred, the ampersand on a
+         line of its own */
+      :where(:root:not([data-theme="hacker"])) .masthead {
+        padding: clamp(72px, 11vw, 152px) var(--margin) clamp(72px, 10vw, 136px);
+        text-align: center;
+      }
+
       .masthead h1 {
-        font-size: clamp(3.2rem, 15vw, 12rem);
+        font-size: clamp(4.2rem, 11.5vw, 9.5rem);
+      }
+
+      :where(:root:not([data-theme="hacker"])) .masthead h1 {
+        line-height: 0.92;
+      }
+
+      :where(:root:not([data-theme="hacker"])) .masthead h1 > br {
+        display: none;
       }
 
       .masthead h1 .amp {
-        color: var(--red);
+        color: var(--ink);
         margin-left: 0.1em;
+      }
+
+      :where(:root:not([data-theme="hacker"])) .masthead h1 .amp {
+        display: block;
+        margin: 0.06em 0 0.02em;
+        font-size: 0.62em;
+        font-style: italic;
+        line-height: 1;
       }
 
       .masthead .lede {
@@ -415,57 +633,80 @@
         margin: clamp(24px, 4vw, 40px) 0 0;
       }
 
+      :where(:root:not([data-theme="hacker"])) .masthead .lede {
+        max-width: 25em;
+        margin: clamp(36px, 5vw, 56px) auto 0;
+        font-family: var(--display);
+        font-size: clamp(1.3rem, 2.1vw, 1.65rem);
+        line-height: 1.45;
+        color: var(--ink-2);
+      }
+
       /* ---------- sections ---------- */
 
       section {
         padding-block: clamp(48px, 7vw, 88px) clamp(56px, 8vw, 104px);
       }
 
+      :where(:root:not([data-theme="hacker"])) section {
+        padding-block: clamp(64px, 8vw, 112px) clamp(72px, 9vw, 128px);
+      }
+
       section > h2 {
-        font-family: var(--macro);
-        font-weight: 400;
-        text-transform: uppercase;
-        letter-spacing: -0.03em;
-        line-height: 0.92;
-        font-size: clamp(1.9rem, 5.5vw, 3.4rem);
-        margin: 0 0 8px;
+        font-family: var(--display);
+        font-weight: 300;
+        letter-spacing: -0.005em;
+        line-height: 1.05;
+        font-size: clamp(2.4rem, 4.6vw, 3.6rem);
+        margin: 0 0 clamp(28px, 3.5vw, 44px);
         text-wrap: balance;
       }
 
       section > .prose {
-        margin: 20px 0 40px;
+        margin: 0;
       }
 
-      /* ---------- data compartments ---------- */
+      /* ---------- details: label, value, a line of description ---------- */
 
       .facts {
         margin: 32px 0 0;
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
-        gap: 2px;
-        background: var(--ink);
-        border: 2px solid var(--ink);
+        gap: 44px clamp(24px, 3vw, 44px);
+        background: none;
+        border: var(--hw) solid var(--hair);
       }
 
       .facts > div {
         background: var(--substrate);
-        padding: 20px 22px 26px;
+        padding: 16px 0 0;
         display: flex;
         flex-direction: column;
       }
 
+      /* no boxes: each detail hangs from its own hairline, so rows can wrap
+         at any width without leaving an empty cell behind */
+      :where(:root:not([data-theme="hacker"])) .facts {
+        margin-top: clamp(48px, 6vw, 72px);
+        border: 0;
+      }
+
+      :where(:root:not([data-theme="hacker"])) .facts > div {
+        background: none;
+        border-top: var(--hw) solid var(--hair);
+      }
+
       .facts dt {
-        color: var(--red);
+        color: var(--ink-3);
       }
 
       .facts .value {
-        font-family: var(--macro);
+        font-family: var(--display);
         font-weight: 400;
-        text-transform: uppercase;
-        letter-spacing: -0.03em;
-        font-size: clamp(1.6rem, 4vw, 2.1rem);
-        line-height: 1;
-        margin: 14px 0 10px;
+        letter-spacing: -0.005em;
+        font-size: clamp(1.8rem, 2.6vw, 2.2rem);
+        line-height: 1.1;
+        margin: 14px 0 12px;
       }
 
       .facts address {
@@ -479,7 +720,7 @@
         max-width: 60ch;
         margin: 0 0 8px;
         padding: 14px 18px;
-        border: 2px solid var(--ink);
+        border: var(--hw) solid transparent;
         background: var(--substrate);
       }
 
@@ -488,11 +729,32 @@
         color: var(--red);
       }
 
+      :where(:root:not([data-theme="hacker"])) .notice {
+        margin-top: clamp(32px, 4vw, 44px);
+        padding: 18px 24px 19px;
+      }
+
+      :where(:root:not([data-theme="hacker"])) .notice .telemetry {
+        color: var(--ink-3);
+      }
+
       .maplink {
         display: inline-block;
         margin-top: 10px;
-        color: var(--red);
+        color: var(--ink);
         text-underline-offset: 3px;
+      }
+
+      :where(:root:not([data-theme="hacker"])) .maplink {
+        display: block;
+        width: fit-content;
+        margin-top: 14px;
+        text-decoration-color: var(--ink-3);
+        text-underline-offset: 0.6em;
+      }
+
+      :where(:root:not([data-theme="hacker"])) .maplink:hover {
+        text-decoration-color: var(--ink);
       }
 
       /* pin descriptions to the cell floor so they share a baseline even when
@@ -500,8 +762,16 @@
       .facts dd {
         margin: 0;
         margin-top: auto;
-        padding-top: 14px;
+        padding-top: 0;
         font-size: 1rem;
+      }
+
+      /* without boxes there is no floor to pin to: descriptions follow
+         their values */
+      :where(:root:not([data-theme="hacker"])) .facts dd {
+        margin-top: 0;
+        color: var(--ink-2);
+        line-height: 1.5;
       }
 
       /* ---------- roster ---------- */
@@ -510,34 +780,59 @@
         margin: 32px 0 0;
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
-        gap: 2px;
-        background: var(--ink);
-        border: 2px solid var(--ink);
+        gap: 44px clamp(24px, 3vw, 44px);
+        background: none;
+        border: var(--hw) solid var(--hair);
       }
 
       .roster > div {
         background: var(--substrate);
-        padding: 18px 22px 22px;
+        padding: 16px 0 0;
+      }
+
+      /* the same hanging hairline as the details, label first */
+      :where(:root:not([data-theme="hacker"])) .roster {
+        border: 0;
+      }
+
+      :where(:root:not([data-theme="hacker"])) .roster > div {
+        display: flex;
+        flex-direction: column;
+        background: none;
+        border-top: var(--hw) solid var(--hair);
       }
 
       .roster dt {
-        font-family: var(--macro);
+        font-family: var(--display);
         font-weight: 400;
-        text-transform: uppercase;
-        letter-spacing: -0.02em;
-        font-size: 1.5rem;
-        line-height: 1;
+        letter-spacing: 0;
+        font-size: 2.2rem;
+        line-height: 1.1;
+      }
+
+      :where(:root:not([data-theme="hacker"])) .roster dt {
+        font-style: italic;
       }
 
       .roster .tag {
         display: block;
-        color: var(--red);
+        color: var(--ink-3);
         margin-top: 10px;
+      }
+
+      :where(:root:not([data-theme="hacker"])) .roster .tag {
+        order: -1;
+        margin: 0 0 14px;
       }
 
       .roster dd {
         margin: 8px 0 0;
         font-size: 1rem;
+      }
+
+      :where(:root:not([data-theme="hacker"])) .roster dd {
+        color: var(--ink-2);
+        line-height: 1.5;
       }
 
       /* ---------- plates ---------- */
@@ -550,15 +845,29 @@
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 0;
         background: var(--substrate);
-        border: 2px solid var(--ink);
+        border: var(--hw) solid var(--hair);
       }
 
       /* outlines, not gaps over an ink parent: a partly-filled last row would
          otherwise leave empty tracks painting the parent as a black slab */
       .plates li {
         background: var(--substrate);
-        outline: 1px solid var(--ink);
+        outline: 1px solid var(--hair);
         display: flex;
+      }
+
+      /* photographs mounted on the page: air between them, a hairline frame
+         with a sliver of paper inside it, a caption underneath */
+      :where(:root:not([data-theme="hacker"])) .plates {
+        margin-top: clamp(48px, 6vw, 72px);
+        gap: clamp(44px, 5vw, 64px) clamp(24px, 3vw, 44px);
+        background: none;
+        border: 0;
+      }
+
+      :where(:root:not([data-theme="hacker"])) .plates li {
+        background: none;
+        outline: 0;
       }
 
       .plates figure {
@@ -573,6 +882,13 @@
         display: block;
         aspect-ratio: 4 / 5;
         object-fit: cover;
+        filter: saturate(0.8);
+      }
+
+      :where(:root:not([data-theme="hacker"])) .plates img {
+        padding: 6px;
+        border: var(--hw) solid var(--hair);
+        background: var(--paper);
       }
 
       /* Slot for the scanned cyanotype once it exists. Drop the scan at
@@ -580,8 +896,12 @@
          "The day" panel — no other change needed. */
       .exposure {
         margin: 0 0 40px;
-        border: 2px solid var(--ink);
+        border: var(--hw) solid var(--hair);
         background: var(--cyan-wash);
+      }
+
+      :where(:root:not([data-theme="hacker"])) .exposure {
+        background: none;
       }
 
       .exposure img {
@@ -593,18 +913,17 @@
 
       .exposure figcaption {
         padding: 12px 16px;
-        border-top: 2px solid var(--ink);
-        color: var(--cyan);
+        border-top: var(--hw) solid var(--hair);
+        color: var(--ink-3);
       }
 
       /* ---------- ascii art ---------- */
 
-      /* every piece sits in the same framed compartment the facts use */
       .art {
         margin: 0 0 40px;
-        border: 2px solid var(--ink);
+        border: var(--hw) solid var(--hair);
         background: var(--paper);
-        --ascii-ink: var(--cyan);
+        --ascii-ink: var(--ink);
       }
 
       .art ascii-art,
@@ -615,17 +934,49 @@
         background: var(--paper);
       }
 
-      .art figcaption {
-        padding: 12px 16px;
-        border-top: 2px solid var(--ink);
-        color: var(--cyan);
+      /* A stipple print in one ink, mounted: the plate gets a hairline frame
+         on the column edge with an even margin of paper inside it, and the
+         caption hangs below. The scenes' paper data-cols is 200 for 192
+         columns, so the fit leaves 4% of the width for that margin; padding
+         in % is a share of the figure's width on all four sides. */
+      :where(:root:not([data-theme="hacker"])) .art {
+        max-width: 920px;
+        margin: 0 0 clamp(48px, 6vw, 72px);
+        border: 0;
+        background: none;
       }
 
-      /* the names, letter by letter, under the masthead */
+      :where(:root:not([data-theme="hacker"])) .art ascii-art {
+        width: fit-content;
+        max-width: 100%;
+        margin: 0;
+        padding: 1.6%;
+        background: none;
+        border: var(--hw) solid var(--hair);
+      }
+
+      .art figcaption {
+        padding: 12px 16px;
+        border-top: var(--hw) solid var(--hair);
+        color: var(--ink-3);
+      }
+
+      :where(:root:not([data-theme="hacker"])) .art figcaption {
+        padding: 16px 0 0;
+        border-top: 0;
+        color: var(--ink-2);
+        font-size: 1rem;
+        font-style: italic;
+        font-weight: 400;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+
+      /* the names, letter by letter, under the masthead (hacker mode only) */
       .lettering {
         margin: clamp(24px, 4vw, 40px) 0 0;
         max-width: 720px;
-        --ascii-ink: var(--cyan);
+        --ascii-ink: var(--ink);
       }
 
       .lettering ascii-art,
@@ -634,13 +985,20 @@
         width: 100%;
       }
 
-      /* animated rules in place of the plain hairlines */
       .art-rule {
         padding: 6px var(--gutter);
-        --ascii-ink: var(--cyan);
-        border-top: 2px solid var(--ink);
-        border-bottom: 2px solid var(--ink);
+        --ascii-ink: var(--ink);
+        border-top: var(--hw) solid var(--hair);
+        border-bottom: var(--hw) solid var(--hair);
         overflow: hidden;
+      }
+
+      /* between two sections of a panel: one quiet hairline across the column */
+      :where(:root:not([data-theme="hacker"])) .art-rule {
+        margin-inline: var(--margin);
+        padding: 0;
+        border-top-color: var(--hair-2);
+        border-bottom: 0;
       }
 
       .art-rule ascii-art,
@@ -649,13 +1007,13 @@
         margin: 0 auto;
       }
 
-      /* the pets, drawn small inside their roster cells */
+      /* the pets, drawn small inside their roster cells (hacker mode only) */
       .roster ascii-art,
       .roster scroll-art {
         display: block;
         width: 100%;
         margin-top: 14px;
-        --ascii-ink: var(--cyan);
+        --ascii-ink: var(--ink);
       }
 
       .pos-mid {
@@ -672,36 +1030,55 @@
         font-size: 0.95rem;
       }
 
+      :where(:root:not([data-theme="hacker"])) .plates figcaption {
+        padding: 22px 0 0;
+        color: var(--ink-2);
+        font-style: italic;
+        line-height: 1.45;
+      }
+
       .plates figcaption .idx {
-        color: var(--cyan);
+        color: var(--ink-3);
         margin-right: 8px;
+      }
+
+      :where(:root:not([data-theme="hacker"])) .plates figcaption .idx {
+        margin-right: 12px;
+        font-style: normal;
       }
 
       /* ---------- band + footer ---------- */
 
-      /* two parallel rules with an 8px gap. box-sizing is border-box, so the
-         height has to carry both 2px rules plus the gap. */
       .band {
-        border-top: 2px solid var(--cyan);
-        border-bottom: 2px solid var(--cyan);
+        border-top: 2px solid var(--hair);
+        border-bottom: 2px solid var(--hair);
         padding: 4px var(--gutter);
-        --ascii-ink: var(--cyan);
+        --ascii-ink: var(--ink);
         overflow: hidden;
       }
 
-
+      /* closes the panels off from the footer: a single hairline */
+      :where(:root:not([data-theme="hacker"])) .band {
+        margin-inline: var(--margin);
+        padding: 0;
+        border-width: var(--hw) 0 0;
+      }
 
       footer {
         padding: clamp(48px, 7vw, 80px) var(--gutter) clamp(64px, 9vw, 104px);
       }
 
+      :where(:root:not([data-theme="hacker"])) footer {
+        padding: clamp(64px, 8vw, 104px) var(--margin) clamp(64px, 8vw, 96px);
+      }
+
       footer h2 {
-        font-family: var(--macro);
-        font-weight: 400;
-        text-transform: uppercase;
-        letter-spacing: -0.03em;
-        font-size: clamp(1.8rem, 5vw, 3rem);
-        margin: 0 0 20px;
+        font-family: var(--display);
+        font-weight: 300;
+        letter-spacing: -0.005em;
+        line-height: 1.05;
+        font-size: clamp(2.2rem, 4vw, 3rem);
+        margin: 0 0 24px;
       }
 
       /* was margin:0 when the footer held a single paragraph; now there are
@@ -719,6 +1096,18 @@
         flex-wrap: wrap;
         gap: 8px 28px;
         margin-top: 44px;
+        color: var(--ink-3);
+      }
+
+      :where(:root:not([data-theme="hacker"])) .signoff {
+        margin-top: clamp(56px, 7vw, 88px);
+        padding-top: 20px;
+        border-top: var(--hw) solid var(--hair-2);
+      }
+
+      :where(:root:not([data-theme="hacker"])) .signoff a {
+        color: var(--ink-2);
+        text-underline-offset: 0.6em;
       }
 
       @media (max-width: 560px) {
@@ -726,7 +1115,6 @@
           grid-template-columns: minmax(0, 1fr);
         }
 
-        /* all four tabs must fit, or the last one looks like it isn't there */
         /* Four labels won't fit on one phone-width row without shrinking the
            type past readable. Wrap to 2x2 instead: every tab stays fully
            visible and the type goes back up. */
@@ -738,14 +1126,22 @@
         .tab {
           flex: 1 0 50%;
           max-width: 50%;
-          padding: 13px 14px;
+          padding: 16px 8px 17px;
           font-size: 0.72rem;
-          letter-spacing: 0.04em;
+          letter-spacing: 0.12em;
           text-align: left;
         }
 
+        :where(:root:not([data-theme="hacker"])) .tab {
+          text-align: center;
+        }
+
+        :where(:root:not([data-theme="hacker"])) .tab[aria-selected="true"]::after {
+          bottom: 8px;
+        }
+
         .tab:nth-child(odd) {
-          border-right: 2px solid var(--ink);
+          border-right: var(--hw) solid var(--hair-2);
         }
 
         .tab:nth-child(even) {
@@ -754,7 +1150,7 @@
 
         .tab:nth-child(1),
         .tab:nth-child(2) {
-          border-bottom: 2px solid var(--ink);
+          border-bottom: var(--hw) solid var(--hair-2);
         }
       }
 
@@ -766,14 +1162,33 @@
         .doorway-plate {
           min-height: 54svh;
           border-right: 0;
-          border-bottom: 2px solid var(--ink);
+          border-bottom: var(--hw) solid var(--hair);
         }
 
         .doorway-hail {
           padding: 32px var(--gutter) 44px;
         }
+
+        /* the plate mark lands on the text column's gutter */
+        :where(:root:not([data-theme="hacker"])) .doorway-plate {
+          min-height: 0;
+          padding: 40px calc(var(--gutter) + 9px);
+        }
+
+        :where(:root:not([data-theme="hacker"])) .doorway-plate scroll-art {
+          outline-offset: 9px;
+        }
+
+        :where(:root:not([data-theme="hacker"])) .doorway-hail {
+          padding: 40px var(--gutter) 52px;
+        }
       }
 
+      @media (prefers-reduced-motion: reduce) {
+        :where(:root:not([data-theme="hacker"])) .enter::after {
+          transition: none;
+        }
+      }
 
       /* =====================================================================
          HACKER MODE. Same page, different machine: phosphor on black, mono
@@ -1221,11 +1636,20 @@
       [data-theme="hacker"] .roster scroll-art,
       [data-theme="hacker"] .art,
       [data-theme="hacker"] .art ascii-art,
-      [data-theme="hacker"] .art scroll-art,
-      [data-theme="hacker"] .art-rule,
-      [data-theme="hacker"] .band {
+      [data-theme="hacker"] .art scroll-art {
         --ascii-ink: var(--phosphor);
         background: #000;
+      }
+
+      /* dividers: one hairline, nothing drawn on it */
+      [data-theme="hacker"] .art-rule,
+      [data-theme="hacker"] .band {
+        padding: 0;
+        margin-inline: var(--gutter);
+        border: 0;
+        border-top: 1px solid var(--rule);
+        background: none;
+        max-height: none;
       }
 
       [data-theme="hacker"] .art figcaption {
@@ -1245,12 +1669,6 @@
 
       [data-theme="hacker"] .plates figcaption .idx {
         color: var(--phosphor);
-      }
-
-      [data-theme="hacker"] .band {
-        border-color: var(--rule);
-        max-height: 96px;
-        overflow: hidden;
       }
 
       /* ---- footer */
@@ -1435,20 +1853,22 @@
           <span class="hack">[ stabilize ]</span>
         </button>
         <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false">
-          <span class="paper">[ Hacker mode ]</span><span class="hack">theme --set paper</span>
+          <span class="paper">Hacker mode</span><span class="hack">theme --set paper</span>
         </button>
       </div>
 
       <a class="doorway" href="#invitation">
         <div class="doorway-plate">
-          <scroll-art
-            piece="kyle-elise-hello"
-            data-cols="120"
-            data-max="18"
-            data-paper='{}'
-            data-hack='{"look":"ascii","mono":"","contrast":"35"}'
-            aria-label="Kyle and Elise leaning close to the camera in sunglasses under a pressed-tin ceiling, as an animated cyanotype"
-          ></scroll-art>
+          <div class="doorway-mat">
+            <scroll-art
+              piece="kyle-elise-hello"
+              data-cols="120"
+              data-max="18"
+              data-paper='{}'
+              data-hack='{"look":"ascii","mono":"","contrast":"35"}'
+              aria-label="Kyle and Elise leaning close to the camera in sunglasses under a pressed-tin ceiling, as animated ASCII art"
+            ></scroll-art>
+          </div>
           <noscript>
             <img
               src="/assets/wedding/hello-there.jpg"
@@ -1458,7 +1878,7 @@
         </div>
         <div class="doorway-hail">
           <p class="macro"><span class="paper">Oh hello <em>there</em></span><span class="hack cursor">&gt; oh hello <em>there</em></span></p>
-          <span class="enter telemetry"><span class="paper">[ Enter ]</span><span class="hack">[ press enter ]</span></span>
+          <span class="enter telemetry"><span class="paper">Enter</span><span class="hack">[ press enter ]</span></span>
         </div>
       </a>
     </div>
@@ -1466,14 +1886,7 @@
     <main id="invitation">
       <header class="masthead">
         <h1 class="macro"><span class="hack">$ whoami<br /></span>Kyle<span class="amp">&amp;</span><br />Elise</h1>
-        <div class="lettering">
-          <ascii-art
-            class="paper"
-            piece="kyle-and-elise"
-            data-cols="71"
-            data-max="12"
-            aria-hidden="true"
-          ></ascii-art>
+        <div class="lettering hack">
           <scroll-art
             class="hack"
             piece="kyle-elise-santorini"
@@ -1568,7 +1981,7 @@
             mono
             data-cols="192"
             data-max="12"
-            data-paper='{"piece":"east-river-bridge-sunrise","look":"dots","mono":"","data-cols":"192","data-max":"12"}'
+            data-paper='{"piece":"east-river-bridge-sunrise","look":"dots","mono":"","data-cols":"200","data-max":"12"}'
             data-hack='{"piece":"nyc-skyline-night","data-cols":"104","data-max":"12"}'
             aria-label="Greenpoint, from the river, animated ASCII art"
           ></ascii-art>
@@ -1614,14 +2027,14 @@
               <a
                 class="telemetry maplink"
                 href="https://maps.apple.com/?q=Rule%20of%20Thirds&amp;address=171%20Banker%20St,%20Brooklyn,%20NY%2011222"
-                ><span class="paper">[ Open in Maps ]</span><span class="hack">[ open --maps ]</span></a
+                ><span class="paper">Open in Maps</span><span class="hack">[ open --maps ]</span></a
               >
             </dd>
           </div>
           <div>
             <dt class="telemetry">Dress code</dt>
             <span class="value">Cocktail attire</span>
-            <dd><span class="paper">We considered togas and ruled against them.</span><span class="hack">togas: considered, rejected</span></dd>
+            <dd><span class="paper">Wear shoes you can dance in. We will be checking.</span><span class="hack">shoes: dance-ready required. compliance will be checked</span></dd>
           </div>
           <div>
             <dt class="telemetry">RSVP</dt>
@@ -1640,16 +2053,7 @@
       >
       <section class="bay">
         <h2><span class="paper">The next day</span><span class="hack">cat next-day.txt</span></h2>
-        <figure class="art">
-          <ascii-art
-            class="paper"
-            piece="walking-dog"
-            look="dots"
-            mono
-            data-cols="96"
-            data-max="12"
-            aria-label="The park, Saturday, animated ASCII art"
-          ></ascii-art>
+        <figure class="art hack">
           <scroll-art
             class="hack"
             piece="elise-sierra-ascii"
@@ -1659,7 +2063,7 @@
             data-max="12"
             aria-label="Elise laughing while holding Sierra, who is yelling, as ASCII art"
           ></scroll-art>
-          <figcaption class="telemetry"><span class="paper">The park, Saturday</span><span class="hack">elise and sierra, in agreement</span></figcaption>
+          <figcaption class="telemetry"><span class="hack">elise and sierra, in agreement</span></figcaption>
         </figure>
         <p class="prose">
           We are doing a picnic in the park on the Saturday. No structure, no
@@ -1691,7 +2095,7 @@
               <a
                 class="telemetry maplink"
                 href="https://maps.apple.com/?q=McCarren%20Park&amp;address=776%20Lorimer%20St,%20Brooklyn,%20NY"
-                ><span class="paper">[ Open in Maps ]</span><span class="hack">[ open --maps ]</span></a
+                ><span class="paper">Open in Maps</span><span class="hack">[ open --maps ]</span></a
               >
             </dd>
           </div>
@@ -1713,7 +2117,7 @@
             piece="liberty-harbor-dawn"
             look="dots"
             mono
-            data-cols="192"
+            data-cols="200"
             data-max="12"
             aria-label="The harbour, on approach, animated ASCII art"
           ></ascii-art>
@@ -1763,20 +2167,11 @@
       </section>
 
       <div class="art-rule" role="presentation">
-        <ascii-art piece="dotted-rule" mono data-cols="90" data-max="14" aria-hidden="true" data-paper='{"piece":"dotted-rule","data-cols":"90"}' data-hack='{"piece":"heartbeat-rule","data-cols":"96"}'></ascii-art>
       </div>
 
       <section class="bay">
         <h2><span class="paper">Where to stay</span><span class="hack">cat hotels.txt</span></h2>
-        <figure class="art">
-          <ascii-art
-            class="paper"
-            piece="nyc-skyline-night"
-            mono
-            data-cols="104"
-            data-max="12"
-            aria-label="Across the river, after dark, animated ASCII art"
-          ></ascii-art>
+        <figure class="art hack">
           <scroll-art
             class="hack"
             piece="kyle-elise-masks"
@@ -1786,7 +2181,7 @@
             data-max="12"
             aria-label="Kyle and Elise lying down in face masks, as ASCII art"
           ></scroll-art>
-          <figcaption class="telemetry"><span class="paper">Across the river, after dark</span><span class="hack">a normal tuesday</span></figcaption>
+          <figcaption class="telemetry"><span class="hack">a normal tuesday</span></figcaption>
         </figure>
         <p class="prose">
           Everything below is in Greenpoint or Williamsburg, walking distance to
@@ -1811,7 +2206,7 @@
               <a
                 class="telemetry maplink"
                 href="https://maps.apple.com/?q=The%20William%20Vale%2C%20Brooklyn"
-                ><span class="paper">[ Open in Maps ]</span><span class="hack">[ open --maps ]</span></a
+                ><span class="paper">Open in Maps</span><span class="hack">[ open --maps ]</span></a
               >
             </dd>
           </div>
@@ -1824,7 +2219,7 @@
               <a
                 class="telemetry maplink"
                 href="https://maps.apple.com/?q=CODA%20Williamsburg%2C%20Brooklyn"
-                ><span class="paper">[ Open in Maps ]</span><span class="hack">[ open --maps ]</span></a
+                ><span class="paper">Open in Maps</span><span class="hack">[ open --maps ]</span></a
               >
             </dd>
           </div>
@@ -1837,7 +2232,7 @@
               <a
                 class="telemetry maplink"
                 href="https://maps.apple.com/?q=The%20Hoxton%20Williamsburg%2C%20Brooklyn"
-                ><span class="paper">[ Open in Maps ]</span><span class="hack">[ open --maps ]</span></a
+                ><span class="paper">Open in Maps</span><span class="hack">[ open --maps ]</span></a
               >
             </dd>
           </div>
@@ -1869,15 +2264,6 @@
             <dt>Leo</dt>
             <span class="tag telemetry">Cat</span>
             <dd><span class="paper">Black, silent, fundamentally unknowable.</span><span class="hack">black; silent; unknowable</span></dd>
-            <ascii-art
-              class="paper"
-              piece="sleeping-cat"
-              look="dots"
-              mono
-              data-cols="80"
-              data-max="6"
-              aria-label="A cat asleep, animated ASCII art"
-            ></ascii-art>
             <scroll-art
               class="hack"
               piece="leo-ascii"
@@ -1892,15 +2278,6 @@
             <dt>Sierra</dt>
             <span class="tag telemetry">Dog</span>
             <dd><span class="paper">Mischievous demon. Here for treats and a good time.</span><span class="hack">mischievous demon. wants=treats,fun</span></dd>
-            <ascii-art
-              class="paper"
-              piece="wagging-pup"
-              look="dots"
-              mono
-              data-cols="60"
-              data-max="6"
-              aria-label="A puppy wagging its tail, animated ASCII art"
-            ></ascii-art>
             <scroll-art
               class="hack"
               piece="sierra-ascii"
@@ -1956,7 +2333,6 @@
       </section>
 
       <div class="art-rule" role="presentation">
-        <ascii-art piece="dotted-rule" mono data-cols="90" data-max="14" aria-hidden="true" data-paper='{"piece":"dotted-rule","data-cols":"90"}' data-hack='{"piece":"heartbeat-rule","data-cols":"96"}'></ascii-art>
       </div>
 
       <section class="bay">
@@ -2035,13 +2411,12 @@
     </main>
 
     <div class="band" role="presentation">
-      <ascii-art piece="wave-divider" mono data-cols="96" data-max="14" aria-hidden="true" data-paper='{"piece":"wave-divider","data-cols":"96"}' data-hack='{"piece":"heartbeat-rule","data-cols":"96"}'></ascii-art>
     </div>
 
     <footer>
       <h2><span class="paper">Questions</span><span class="hack">man questions</span></h2>
       <p class="prose">
-        <span class="paper">Text us. If you don't have our numbers, that is itself an answer, but
+        <span class="paper">Text us. If you don’t have our numbers, that is itself an answer, but
         find Kyle on the internet and we will sort it out.</span><span class="hack">text us. no number on file is itself an answer, but kyle is
         findable on the internet and we will sort it out.</span>
       </p>
@@ -2222,9 +2597,12 @@
           apply(root.dataset.theme === "hacker" ? "paper" : "hacker", { save: true })
         );
 
-        // follow the OS until the visitor picks
+        // The OS switch always wins: flipping light/dark mode flips the site,
+        // and forgets any earlier manual choice so later loads follow the OS too.
         matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
-          if (root.dataset.themeSource === "os") apply(e.matches ? "hacker" : "paper");
+          try { localStorage.removeItem("wedding-theme"); } catch (err) {}
+          root.dataset.themeSource = "os";
+          apply(e.matches ? "hacker" : "paper");
         });
 
         window.__setTheme = (t) => apply(t, { save: true });
